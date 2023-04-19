@@ -1,0 +1,29 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#491B46",
+        "titleBar.activeBackground": "#672662",
+        "titleBar.activeForeground": "#FDF9FC"
+    },
+    "files.associations": {
+        "atomic": "c",
+        "bit": "c",
+        "compare": "c",
+        "cstddef": "c",
+        "deque": "c",
+        "fstream": "c",
+        "iterator": "c",
+        "limits": "c",
+        "memory": "c",
+        "mutex": "c",
+        "ranges": "c",
+        "system_error": "c",
+        "type_traits": "c",
+        "vector": "c",
+        "xiosbase": "c",
+        "xlocale": "c",
+        "xmemory": "c",
+        "xstring": "c",
+        "xtree": "c",
+        "xutility": "c"
+    }
+}
