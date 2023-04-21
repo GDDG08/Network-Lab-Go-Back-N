@@ -24,12 +24,13 @@ json Config::readConfigFile() {
 Config::ConfigBean Config::parseConfig() {
     json j = readConfigFile();
     ConfigBean cb;
-    cb.UDPPort = j["UDPPort"];
-    cb.error_rate = j["error_rate"];
-    cb.lost_rate = j["lost_rate"];
-    cb.SW_size = j["SW_size"];
-    cb.time_out = j["time_out"];
-    cb.data_size = j["data_size"];
-    cb.init_seq_no = j["init_seq_no"];
+    cb.udpPort = j["UDPPort"];
+    cb.dataSize = j["DataSize"];
+    cb.errorRate = j["ErrorRate"];
+    cb.lostRate = j["LostRate"];
+    cb.swSize = j["SWSize"];
+    cb.initSeqNo = j["InitSeqNo"];
+    cb.timeout = j["Timeout"];
+
     return cb;
 }

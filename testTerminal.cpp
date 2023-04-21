@@ -19,20 +19,14 @@ using namespace std;
 #define HOST_ID "null"
 #endif
 
-// #if HOST_ID == A
-// #define HOST_PORT 11111
-// #elif HOST_ID == B
-// #define HOST_PORT 11112
-// #elif HOST_ID == C
-// #define HOST_PORT 11113
-// #endif
-
 int main() {
     printf("[TestTerminal] ID-> " HOST_ID "\n");
+    
     Config config("config_host_" HOST_ID ".json");
     Config::ConfigBean cfg = config.parseConfig();
+    cfg.printConfig();
 
-    PhysicalLayer pl(cfg.UDPPort);
+    PhysicalLayer pl(cfg.udpPort);
     pl.init();
 
     // pause in cmd

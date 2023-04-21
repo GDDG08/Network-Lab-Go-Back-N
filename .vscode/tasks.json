@@ -53,6 +53,21 @@
             },
             "dependsOn": [
                 "cmakeRun"
+            ]
+            
+        },
+        {
+            "type": "shell",
+            "label": "runTerminal2",
+            "command": "start",
+            "args":[
+                "${workspaceFolder}\\bin\\GBN_Network2.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}\\bin"
+            },
+            "dependsOn": [
+                "makeRun"
             ],
             "problemMatcher": [],
             "group": {

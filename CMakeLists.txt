@@ -38,31 +38,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # 设置输出路径
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-# # 设置头文件路径
-# include_directories(${PROJECT_SOURCE_DIR}/network)
-# include_directories(${PROJECT_SOURCE_DIR}/toolkit)
 
-# # 设置库文件路径
-# link_directories(${PROJECT_SOURCE_DIR}/lib)
-
-# # 设置链接库
-# target_link_libraries(${PROJECT_NAME} toolkit)
-
-# # 设置链接库
-# target_link_libraries(${PROJECT_NAME} network)
-
-# # 设置链接库
+# 设置链接库
 # target_link_libraries(${PROJECT_NAME} ws2_32)
+target_link_libraries(${PROJECT_NAME}${HOST_ID_1} ws2_32)
+target_link_libraries(${PROJECT_NAME}${HOST_ID_2} ws2_32)
 
-# # 设置链接库
-# target_link_libraries(${PROJECT_NAME} pthread)
-
-# # 设置链接库
-target_link_libraries(${PROJECT_NAME}${HOST_ID_1} wsock32)
-target_link_libraries(${PROJECT_NAME}${HOST_ID_2} wsock32)
-
-# # 设置链接库
-# target_link_libraries(${PROJECT_NAME} mswsock)
-
-# # 设置链接库
-# target_link_libraries(${PROJECT_NAME} ws2_32)

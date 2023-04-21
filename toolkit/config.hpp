@@ -20,16 +20,29 @@ class Config {
     string path;
 
     json readConfigFile();
+
    public:
     class ConfigBean {
        public:
-        int UDPPort;
-        int error_rate;
-        int lost_rate;
-        int SW_size;
-        int time_out;
-        int data_size;
-        int init_seq_no;
+        int udpPort;
+        int dataSize;
+        int errorRate;
+        int lostRate;
+        int swSize;
+        int initSeqNo;
+        int timeout;
+
+        void printConfig() {
+            cout << "======== Config ========" << endl;
+            cout << "UDPPort: " << udpPort << endl;
+            cout << "DataSize: " << dataSize << endl;
+            cout << "ErrorRate: " << errorRate << endl;
+            cout << "LostRate: " << lostRate << endl;
+            cout << "SWSize: " << swSize << endl;
+            cout << "InitSeqNo: " << initSeqNo << endl;
+            cout << "Timeout: " << timeout << endl;
+            cout << "========================" << endl;
+        }
     };
     Config(string path);
 

@@ -23,7 +23,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "makeRun",
+            "preLaunchTask": "runTerminal2",
         }
     ]
 }
