@@ -13,22 +13,27 @@
 // header filefor physical layer
 #include <iostream>
 #include <string>
+#include <thread>
 #include <winsock2.h>
 // #pragma comment(lib, "ws2_32.lib")
 
+typedef std::pair<sockaddr_in, std::string> RecvData;
 class PhysicalLayer {
    private:
     const static int BUFF_LEN = 1024;
-    
     int listen_port;
     SOCKET sock;
     sockaddr_in recvAddr;
+
+    bool onRecvTask = false;
 
    public:
     PhysicalLayer(int listen_port);
     int init();
     int sendData(std::string info, int dst_port, ULONG dst_addr = INADDR_BROADCAST);
-    std::string recvData();
+    RecvData recvData();
+    int startRecvTask();
+    int stopRecvTask();
     ~PhysicalLayer();
 };
 

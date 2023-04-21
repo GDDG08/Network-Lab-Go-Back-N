@@ -49,40 +49,66 @@ int PhysicalLayer::init() {
 
 int PhysicalLayer::sendData(std::string info, int dst_port, ULONG dst_addr) {
     // Set up the address and port to send data to
-    sockaddr_in sendAddr;
-    sendAddr.sin_family = AF_INET;
-    sendAddr.sin_port = htons(dst_port);  // Port number
-    sendAddr.sin_addr.s_addr = dst_addr;  // IP address
+    sockaddr_in dstAddr;
+    dstAddr.sin_family = AF_INET;
+    dstAddr.sin_port = htons(dst_port);  // Port number
+    dstAddr.sin_addr.s_addr = dst_addr;  // IP address
 
     // Send data
     const char* sendData = info.data();
-    int sendResult = sendto(sock, sendData, strlen(sendData), 0, (sockaddr*)&sendAddr, sizeof(sendAddr));
+    int sendResult = sendto(sock, sendData, strlen(sendData), 0, (sockaddr*)&dstAddr, sizeof(dstAddr));
     if (sendResult == SOCKET_ERROR) {
         std::cerr << "[PhysicalLayer][Error] sendto failed with error: " << WSAGetLastError() << std::endl;
         closesocket(sock);
         WSACleanup();
         return 1;
     }
+    std::cout << "[PhysicalLayer] Sent data To "
+              << inet_ntoa(dstAddr.sin_addr) << ":" << ntohs(dstAddr.sin_port) << "-->" << std::endl
+               << info << std::endl;
 }
 
-std::string PhysicalLayer::recvData() {
+RecvData PhysicalLayer::recvData() {
     // Receive data
     char buff[BUFF_LEN];
-    int recvResult = recv(sock, buff, sizeof(buff), 0);
+    memset(buff, 0, BUFF_LEN);
+    sockaddr_in senderAddr;
+    int senderAddrSize = sizeof(senderAddr);
+    // use recvfrom to get sender ip port
+    int recvResult = recvfrom(sock, buff, BUFF_LEN, 0, (sockaddr*)&senderAddr, &senderAddrSize);
     if (recvResult == SOCKET_ERROR) {
         std::cerr << "[PhysicalLayer][Error] recv failed with error: " << WSAGetLastError() << std::endl;
         closesocket(sock);
         WSACleanup();
-        return NULL;
+        // exit(1);
+        return RecvData();
     }
 
     // Display the received data
-    std::cout << "[PhysicalLayer] Received data: " << buff << std::endl;
-    return buff;
+    std::cout << "[PhysicalLayer] Received data From "
+              << inet_ntoa(senderAddr.sin_addr) << ":" << ntohs(senderAddr.sin_port) << "-->" << std::endl
+              << buff << std::endl;
+    return RecvData(senderAddr,buff);
+}
+
+int PhysicalLayer::startRecvTask() {
+    std::thread recvTask([this] {
+        while (this->onRecvTask) {
+            RecvData data = this->recvData();
+            std::cout << "[PhysicalLayer][RecvTask] onRecv!" << std::endl;
+            // msg.push_one((pi){"recv_data", tmpp});
+        }
+    });
+    this->onRecvTask = true;
+    recvTask.detach();
+}
+
+int PhysicalLayer::stopRecvTask() {
+    this->onRecvTask = false;
 }
 
 PhysicalLayer::~PhysicalLayer() {
-    // Clean up
+    stopRecvTask();
     closesocket(sock);
     WSACleanup();
 }

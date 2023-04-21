@@ -2,29 +2,14 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CreateBuildDir",
-            "command": "mkdir",
-            "args": [
-                "-p",
-                "build"
+            "label": "recoompileBAT",
+            "command": [
+                "start recompile.bat"
             ],
-            "windows": {
-                "options": {
-                    "shell": {
-                        "executable": "powershell.exe"
-                    }
-                },
-                "args": [
-                    "-Force",
-                    "build"
-                ]
-            },
+            "args": [],
             "options": {
                 "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ]
+            }
         },
         {
             "type": "shell",
@@ -40,7 +25,10 @@
                 "cwd": "${workspaceFolder}/build"
             },
             "dependsOn": [
-                "CreateBuildDir"
+                "recoompileBAT"
+            ],
+            "problemMatcher": [
+                "$gcc"
             ]
         },
         {
@@ -54,13 +42,12 @@
             "dependsOn": [
                 "cmakeRun"
             ]
-            
         },
         {
             "type": "shell",
             "label": "runTerminal2",
             "command": "start",
-            "args":[
+            "args": [
                 "${workspaceFolder}\\bin\\GBN_Network2.exe"
             ],
             "options": {

@@ -21,19 +21,29 @@ using namespace std;
 
 int main() {
     printf("[TestTerminal] ID-> " HOST_ID "\n");
-    
+
     Config config("config_host_" HOST_ID ".json");
     Config::ConfigBean cfg = config.parseConfig();
     cfg.printConfig();
 
+    int PORT_TEST = 0;
+    if (cfg.udpPort == 12345) {
+        PORT_TEST = 12346;
+    } else {
+        PORT_TEST = 12345;
+    }
+
     PhysicalLayer pl(cfg.udpPort);
     pl.init();
 
-    // pause in cmd
-    cout << "Press any key to continue..." << endl;
-    getchar();
+    pl.startRecvTask();
 
-    pl.sendData("Hello World!", 11112, inet_addr("127.0.0.1"));
-    cout << "Hello World!" << endl;
+    while (true) {
+        // pause in cmd
+        cout << "Press any key to continue..." << endl;
+        getchar();
+
+        pl.sendData("Hello World!", PORT_TEST, inet_addr("127.0.0.1"));
+    }
     return 0;
 }
