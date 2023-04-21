@@ -21,8 +21,8 @@ json Config::readConfigFile() {
     return j;
 }
 
-ConfigBean Config::parseConfig() {
-    json j = readConfigFile(path);
+Config::ConfigBean Config::parseConfig() {
+    json j = readConfigFile();
     ConfigBean cb;
     cb.UDPPort = j["UDPPort"];
     cb.error_rate = j["error_rate"];

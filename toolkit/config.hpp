@@ -9,7 +9,6 @@
  */
 
 #include "json.hpp"
-#include "config.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -20,7 +19,7 @@ class Config {
    private:
     string path;
 
-    json readConfigFile(string path);
+    json readConfigFile();
    public:
     class ConfigBean {
        public:

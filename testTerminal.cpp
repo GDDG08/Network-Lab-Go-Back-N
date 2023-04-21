@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-21 19:03:40
+ * @LastEditTime : 2023-04-21 20:07:00
  */
 
 #include <iostream>
@@ -15,21 +15,24 @@ using namespace std;
 #include "network\physicalLayer.hpp"
 #include "toolkit\config.hpp"
 
-#define HOST_ID A
-
-#if HOST_ID == A
-#define HOST_PORT 11111
-#elif HOST_ID == B
-#define HOST_PORT 11112
-#elif HOST_ID == C
-#define HOST_PORT 11113
+#ifndef HOST_ID
+#define HOST_ID "null"
 #endif
 
-int main() {
-    Config config("config_host1.json");
-    ConfigBean cfg = config.parseConfig();
+// #if HOST_ID == A
+// #define HOST_PORT 11111
+// #elif HOST_ID == B
+// #define HOST_PORT 11112
+// #elif HOST_ID == C
+// #define HOST_PORT 11113
+// #endif
 
-        PhysicalLayer pl(HOST_PORT);
+int main() {
+    printf("[TestTerminal] ID-> " HOST_ID "\n");
+    Config config("config_host_" HOST_ID ".json");
+    Config::ConfigBean cfg = config.parseConfig();
+
+    PhysicalLayer pl(cfg.UDPPort);
     pl.init();
 
     // pause in cmd

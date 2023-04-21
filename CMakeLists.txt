@@ -8,25 +8,39 @@ project(GBN_Network)
 set(CMAKE_BUILD_TYPE "Debug")
 
 # # 设置源文件根目录，并设置别名为DIR_ROOT
-# aux_source_directory(. DIR_ROOT)
+aux_source_directory(. DIR_ROOT)
 aux_source_directory(network DIR_NETWORK)
 aux_source_directory(toolkit DIR_TOOLKIT)
 
 # 设置myCppPractice版本标准
 set(CMAKE_CXX_STANDARD 14)
 
+set(HOST_ID_1 "1")
+set(HOST_ID_2 "2")
+
 # 项目包含哪些 文件
-add_executable(${PROJECT_NAME} ${DIR_NETWORK} ${DIR_TOOLKIT} testTerminal.cpp)
+add_executable(${PROJECT_NAME}${HOST_ID_1} testTerminal.cpp ${DIR_NETWORK} ${DIR_TOOLKIT})
+set_target_properties(
+    ${PROJECT_NAME}${HOST_ID_1} 
+    PROPERTIES
+    COMPILE_DEFINITIONS HOST_ID="${HOST_ID_1}"
+   )
+add_executable(${PROJECT_NAME}${HOST_ID_2} testTerminal.cpp ${DIR_NETWORK} ${DIR_TOOLKIT})
+set_target_properties(
+    ${PROJECT_NAME}${HOST_ID_2}
+    PROPERTIES
+    COMPILE_DEFINITIONS HOST_ID="${HOST_ID_2}"
+   )
 
 # 设置编译选项
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -lwsock32")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # 设置输出路径
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-# 设置头文件路径
-include_directories(${PROJECT_SOURCE_DIR}/network)
-include_directories(${PROJECT_SOURCE_DIR}/toolkit)
+# # 设置头文件路径
+# include_directories(${PROJECT_SOURCE_DIR}/network)
+# include_directories(${PROJECT_SOURCE_DIR}/toolkit)
 
 # # 设置库文件路径
 # link_directories(${PROJECT_SOURCE_DIR}/lib)
@@ -44,7 +58,8 @@ include_directories(${PROJECT_SOURCE_DIR}/toolkit)
 # target_link_libraries(${PROJECT_NAME} pthread)
 
 # # 设置链接库
-# target_link_libraries(${PROJECT_NAME} wsock32)
+target_link_libraries(${PROJECT_NAME}${HOST_ID_1} wsock32)
+target_link_libraries(${PROJECT_NAME}${HOST_ID_2} wsock32)
 
 # # 设置链接库
 # target_link_libraries(${PROJECT_NAME} mswsock)
