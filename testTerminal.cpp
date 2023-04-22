@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-22 18:20:12
+ * @LastEditTime : 2023-04-23 02:32:34
  */
 
 #include <iostream>
@@ -36,26 +36,54 @@ int main() {
         PORT_TEST = 12345;
     }
 
-    PhysicalLayer pl(cfg.udpPort);
-    pl.init();
+    // PhysicalLayer pl(cfg);
+    // pl.init();
 
-    pl.startRecvTask();
+    // pl.startRecvTask();
 
-    // test CheckCRC.calc()
-    string test = "Hello World!";
-    Frame tf(FRAME_TYPE_DATA, 0, 0, test);
-    tf.print();
+    // // test CheckCRC.calc()
+    // string test = "Hello World!";
+    // Frame tf(FRAME_TYPE::DATA, 0, 0, test);
+    // tf.print();
 
-    cout << "Buff " << str2hex(tf.to_buff_all()) << endl;
+    // cout << "Buff " << str2hex(tf.to_buff_all()) << endl;
 
+    // while (true) {
+    //     // pause in cmd
+    //     cout << "Press any key to continue..." << endl;
+    //     getchar();
 
+    //     pl.sendData("Hello World!", PORT_TEST, inet_addr("127.0.0.1"));
+    // }
 
-    while (true) {
-        // pause in cmd
-        cout << "Press any key to continue..." << endl;
-        getchar();
+    DataLinkLayer dll(cfg);
+    dll.init();
 
-        pl.sendData("Hello World!", PORT_TEST, inet_addr("127.0.0.1"));
-    }
-    return 0;
+    // use two threads ad producer and consumer to test BlockingQueue
+
+    // test BlockingQueue
+    // mutex tm;
+    // BlockingQueue<int> bq(10);
+    // std::thread producer([&bq, &tm]() {
+    //     for (int i = 0; i < 30; i++) {
+    //         tm.lock();
+    //         cout << "=======: " << i << endl;
+    //         tm.unlock();
+    //         bq.put(i);
+    //         std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    //     }
+    // });
+    // std::thread consumer([&bq, &tm]() {
+    //     for (int i = 0; i < 30; i++) {
+    //         int g = bq.get();
+    //             tm.lock();
+    //         cout << "@@: " << g << endl;
+    //         tm.unlock();
+    //         std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    //     }
+    // });
+    // producer.join();
+    // consumer.join();
+    cout << "Press any key to continue..." << endl;
+    getchar();
 }

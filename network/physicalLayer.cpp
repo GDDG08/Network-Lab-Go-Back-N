@@ -1,18 +1,18 @@
 /*
  * @Project      :
- * @FilePath     : \Code\physicalLayer.cpp
+ * @FilePath     : \Code\network\physicalLayer.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-21 17:06:18
+ * @LastEditTime : 2023-04-22 19:59:26
  */
 #include "physicalLayer.hpp"
 
 // UDP socket on windows to send and receive data
 
-PhysicalLayer::PhysicalLayer(int listen_port) {
-    this->listen_port = listen_port;
+PhysicalLayer::PhysicalLayer(Config::ConfigBean cfg) {
+    this->listen_port = cfg.udpPort;
 }
 
 int PhysicalLayer::init() {
@@ -65,7 +65,8 @@ int PhysicalLayer::sendData(std::string info, int dst_port, ULONG dst_addr) {
     }
     std::cout << "[PhysicalLayer] Sent data To "
               << inet_ntoa(dstAddr.sin_addr) << ":" << ntohs(dstAddr.sin_port) << "-->" << std::endl
-               << info << std::endl;
+              << info << std::endl;
+    return 0;
 }
 
 RecvData PhysicalLayer::recvData() {
@@ -88,7 +89,7 @@ RecvData PhysicalLayer::recvData() {
     std::cout << "[PhysicalLayer] Received data From "
               << inet_ntoa(senderAddr.sin_addr) << ":" << ntohs(senderAddr.sin_port) << "-->" << std::endl
               << buff << std::endl;
-    return RecvData(senderAddr,buff);
+    return RecvData(senderAddr, buff);
 }
 
 int PhysicalLayer::startRecvTask() {
@@ -101,10 +102,12 @@ int PhysicalLayer::startRecvTask() {
     });
     this->onRecvTask = true;
     recvTask.detach();
+    return 0;
 }
 
 int PhysicalLayer::stopRecvTask() {
     this->onRecvTask = false;
+    return 0;
 }
 
 PhysicalLayer::~PhysicalLayer() {

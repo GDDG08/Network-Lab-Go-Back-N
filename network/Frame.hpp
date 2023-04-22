@@ -1,22 +1,32 @@
+/*
+ * @Project      :
+ * @FilePath     : \Code\network\Frame.hpp
+ * @Descripttion :
+ * @Author       : GDDG08
+ * @Date         : 2023-04-22 17:05:53
+ * @LastEditors  : GDDG08
+ * @LastEditTime : 2023-04-23 01:49:12
+ */
 #ifndef FRAME_HPP
 #define FRAME_HPP
 
 #include <bitset>
 #include <string>
+#include <iostream>
 #include "..\toolkit\checkCRC.hpp"
 #include "..\toolkit\debug.hpp"
 
 typedef enum FRAME_TYPE {
-    FRAME_TYPE_DATA = 0,
-    FRAME_TYPE_ACK = 1,
-    FRAME_TYPE_NAK = 2,
-    FRAME_TYPE_END = 3,
+    DATA = 0,
+    ACK = 1,
+    NAK = 2,
+    END = 3,
 } FRAME_TYPE;
 
 class Frame {
    public:
     // uint16_t len = 0;
-    FRAME_TYPE type = FRAME_TYPE_END;
+    FRAME_TYPE type = FRAME_TYPE::END;
     uint8_t seq = 0;
     uint8_t ack = 0;
     std::string info = "";
