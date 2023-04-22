@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-21 20:07:00
+ * @LastEditTime : 2023-04-22 18:20:12
  */
 
 #include <iostream>
@@ -13,7 +13,10 @@
 using namespace std;
 
 #include "network\physicalLayer.hpp"
+#include "network\dataLinkLayer.hpp"
 #include "toolkit\config.hpp"
+#include "toolkit\checkCRC.hpp"
+#include "toolkit\debug.hpp"
 
 #ifndef HOST_ID
 #define HOST_ID "null"
@@ -37,6 +40,15 @@ int main() {
     pl.init();
 
     pl.startRecvTask();
+
+    // test CheckCRC.calc()
+    string test = "Hello World!";
+    Frame tf(FRAME_TYPE_DATA, 0, 0, test);
+    tf.print();
+
+    cout << "Buff " << str2hex(tf.to_buff_all()) << endl;
+
+
 
     while (true) {
         // pause in cmd

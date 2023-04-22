@@ -7,6 +7,9 @@
  * @LastEditors  : GDDG08
  * @LastEditTime : 2023-04-21 19:01:43
  */
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
 
 #include "json.hpp"
 #include <fstream>
@@ -48,3 +51,4 @@ class Config {
 
     ConfigBean parseConfig();
 };
+#endif // CONFIG_HPP
