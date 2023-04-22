@@ -16,97 +16,97 @@ const string save_path = "E:\\aaa\\"; //收到文件的保存地址
 typedef pair<Frame,int> pp;
 typedef pair<string,pp> pi;
 
-class TaskQueue{
-public:
-    TaskQueue()
-	{
-        while(q.size()) q.pop();
-    }
+// class TaskQueue{
+// public:
+//     TaskQueue()
+// 	{
+//         while(q.size()) q.pop();
+//     }
 
-    inline void push_one(pi f)
-	{
-        unique_lock<mutex> lock(mtx);
-        q.push(f);
-        cv.notify_one();
-    }
+//     inline void push_one(pi f)
+// 	{
+//         unique_lock<mutex> lock(mtx);
+//         q.push(f);
+//         cv.notify_one();
+//     }
 
-    inline pi get_one()
-	{
-        unique_lock<mutex> lock(mtx);
-//        while(q.empty())
-//		{
-//            cv.wait(lock, [this] {return !q.empty()});
-//        }
-        cv.wait(lock, [this] {return !q.empty()});
-        auto f = q.front();
-        q.pop();
-        return f;
-    }
-	inline int size(){
-		return q.size();
-	}
-private:
-    mutex mtx;
-    condition_variable cv;
-    queue<pi> q;
-};
+//     inline pi get_one()
+// 	{
+//         unique_lock<mutex> lock(mtx);
+// //        while(q.empty())
+// //		{
+// //            cv.wait(lock, [this] {return !q.empty()});
+// //        }
+//         cv.wait(lock, [this] {return !q.empty()});
+//         auto f = q.front();
+//         q.pop();
+//         return f;
+//     }
+// 	inline int size(){
+// 		return q.size();
+// 	}
+// private:
+//     mutex mtx;
+//     condition_variable cv;
+//     queue<pi> q;
+// };
 
-vector<string> split(string s,set<char> cs)
-{
-    vector<string> res;
-    string x;
-    for (auto c:s)
-	{
-        if (cs.count(c))
-		{
-            if (x.length())
-			{
-                res.push_back(x);
-                x = "";
-            }
-        }
-		else
-		{
-            x.push_back(c);
-        }
-    }
-    if (x.size()) res.push_back(x);
-    return res;
-}
+// vector<string> split(string s,set<char> cs)
+// {
+//     vector<string> res;
+//     string x;
+//     for (auto c:s)
+// 	{
+//         if (cs.count(c))
+// 		{
+//             if (x.length())
+// 			{
+//                 res.push_back(x);
+//                 x = "";
+//             }
+//         }
+// 		else
+// 		{
+//             x.push_back(c);
+//         }
+//     }
+//     if (x.size()) res.push_back(x);
+//     return res;
+// }
 
 
-string to_string(Frame &f)
-{
-    f.h.len = f.info.length();
-    string a,b,c,d;
-	a.resize(sizeof(uint16_t));
-	b.resize(sizeof(uint8_t));
-	c.resize(sizeof(uint8_t));
-	d.resize(sizeof(uint8_t));
-	*(uint16_t*)a.data() = f.h.len;
-	*(uint8_t*)b.data() = f.h.type;
-	*(uint8_t*)c.data() = f.h.seq;
-	*(uint8_t*)d.data() = f.h.ack;
-    string s = a+b+c+d;
-    return s + f.info;
-}
+// string to_string(Frame &f)
+// {
+//     f.h.len = f.info.length();
+//     string a,b,c,d;
+// 	a.resize(sizeof(uint16_t));
+// 	b.resize(sizeof(uint8_t));
+// 	c.resize(sizeof(uint8_t));
+// 	d.resize(sizeof(uint8_t));
+// 	*(uint16_t*)a.data() = f.h.len;
+// 	*(uint8_t*)b.data() = f.h.type;
+// 	*(uint8_t*)c.data() = f.h.seq;
+// 	*(uint8_t*)d.data() = f.h.ack;
+//     string s = a+b+c+d;
+//     return s + f.info;
+// }
 
-//将接收到的string，转为frame
-Frame to_frame(const string &s)
-{
-    Frame f;
-    string a = s.substr(0,2);
-    string b = s.substr(2,1);
-    string c = s.substr(3,1);
-    string d = s.substr(4,1);
-    f.h.len = *(uint16_t*)a.data();
-    f.h.type = *(uint8_t*)b.data();
-    f.h.seq = *(uint8_t*)c.data();
-    f.h.ack = *(uint8_t*)d.data();
-    f.info = s.substr(5, f.h.len);
-    f.h.len-=2;
-    return f;
-}
+// //将接收到的string，转为frame
+// Frame to_frame(const string &s)
+// {
+//     Frame f;
+//     string a = s.substr(0,2);
+//     string b = s.substr(2,1);
+//     string c = s.substr(3,1);
+//     string d = s.substr(4,1);
+//     f.h.len = *(uint16_t*)a.data();
+//     f.h.type = *(uint8_t*)b.data();
+//     f.h.seq = *(uint8_t*)c.data();
+//     f.h.ack = *(uint8_t*)d.data();
+//     f.info = s.substr(5, f.h.len);
+//     f.h.len-=2;
+//     return f;
+// }
 
 class GBN
 {
@@ -167,15 +167,7 @@ private:
 //		return (double)(t2-t1)/CLK_TCK;
 //	}
 	
-	int inc(int num){
-		return (num+1)%(win_size+1);
-	}
 	
-	bool between(int a,int b,int c)
-	{
-		if(((a<=b)&&(b<c))||((c<a)&&(a<=b))||((b<c)&&(c<a))) return true;
-		return false;
-	}
 	
 	//生成需要发送的内容
 	void create_send_data()
@@ -443,46 +435,46 @@ public:
 		printf("frame expected=%d\n",frame_expected);
 
 	}
-    //从文件中读取参数,并初始化
-    GBN(string config_file){
-		memset(ack,0,sizeof(ack));
-        ifstream config(config_file.data());
-        char in[500];
-        while (config.getline(in, 1000))
-		{
-            auto x = split(in, set<char>({' ', ':', '\t'}));
-            if(x[0]=="error_rate"){
-            	error_rate = atoi(x[1].data());
-			}
-			else if(x[0]=="lost_rate"){
-            	loss_rate = atoi(x[1].data());
-			}
-			else if(x[0]=="UDPPort"){
-            	port = atoi(x[1].data());
-			}
-			else if(x[0]=="SW_size"){
-            	win_size = atoi(x[1].data());
-			}
-			else if(x[0]=="time_out"){
-            	wait_time = atoi(x[1].data());
-			}
-			else if(x[0]=="init_seq_no"){
-            	init_seq_no = atoi(x[1].data());
-			}
-			else if(x[0]=="data_size"){
-            	datasize = atoi(x[1].data());
-			}
-        }
-		p = new Physical(port);
-		next_frame_to_send = init_seq_no;
-        frame_expected = init_seq_no;
-        ack_expected = init_seq_no;
+    // //从文件中读取参数,并初始化
+    // GBN(string config_file){
+	// 	memset(ack,0,sizeof(ack));
+    //     ifstream config(config_file.data());
+    //     char in[500];
+    //     while (config.getline(in, 1000))
+	// 	{
+    //         auto x = split(in, set<char>({' ', ':', '\t'}));
+    //         if(x[0]=="error_rate"){
+    //         	error_rate = atoi(x[1].data());
+	// 		}
+	// 		else if(x[0]=="lost_rate"){
+    //         	loss_rate = atoi(x[1].data());
+	// 		}
+	// 		else if(x[0]=="UDPPort"){
+    //         	port = atoi(x[1].data());
+	// 		}
+	// 		else if(x[0]=="SW_size"){
+    //         	win_size = atoi(x[1].data());
+	// 		}
+	// 		else if(x[0]=="time_out"){
+    //         	wait_time = atoi(x[1].data());
+	// 		}
+	// 		else if(x[0]=="init_seq_no"){
+    //         	init_seq_no = atoi(x[1].data());
+	// 		}
+	// 		else if(x[0]=="data_size"){
+    //         	datasize = atoi(x[1].data());
+	// 		}
+    //     }
+	// 	p = new Physical(port);
+	// 	next_frame_to_send = init_seq_no;
+    //     frame_expected = init_seq_no;
+    //     ack_expected = init_seq_no;
 		
-		dir_name = "('"+p->get_ip()+"',"+to_string(port)+")";
-		if(access(dir_name.c_str(),0)==-1) CreateDirectory(dir_name.c_str(), NULL);
+	// 	dir_name = "('"+p->get_ip()+"',"+to_string(port)+")";
+	// 	if(access(dir_name.c_str(),0)==-1) CreateDirectory(dir_name.c_str(), NULL);
 		
-		record_in = new Record(dir_name,"12",12,0);
-		record_out = new Record(dir_name,"12",12,1);
-		fp = fopen("send_file.txt", "rb");
-	}
+	// 	record_in = new Record(dir_name,"12",12,0);
+	// 	record_out = new Record(dir_name,"12",12,1);
+	// 	fp = fopen("send_file.txt", "rb");
+	// }
 };

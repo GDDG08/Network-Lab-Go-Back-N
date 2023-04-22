@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-22 19:59:26
+ * @LastEditTime : 2023-04-23 05:34:00
  */
 #include "physicalLayer.hpp"
 
@@ -47,12 +47,12 @@ int PhysicalLayer::init() {
     return 0;
 }
 
-int PhysicalLayer::sendData(std::string info, int dst_port, ULONG dst_addr) {
+int PhysicalLayer::sendData(std::string info, PhyAddrPort ap) {
     // Set up the address and port to send data to
     sockaddr_in dstAddr;
     dstAddr.sin_family = AF_INET;
-    dstAddr.sin_port = htons(dst_port);  // Port number
-    dstAddr.sin_addr.s_addr = dst_addr;  // IP address
+    dstAddr.sin_port = htons(ap.port);  // Port number
+    dstAddr.sin_addr.s_addr = ap.addr;  // IP address
 
     // Send data
     const char* sendData = info.data();
@@ -84,20 +84,25 @@ RecvData PhysicalLayer::recvData() {
         // exit(1);
         return RecvData();
     }
-
+    PhyAddrPort ap = {senderAddr.sin_port, senderAddr.sin_addr.s_addr};
     // Display the received data
-    std::cout << "[PhysicalLayer] Received data From "
-              << inet_ntoa(senderAddr.sin_addr) << ":" << ntohs(senderAddr.sin_port) << "-->" << std::endl
-              << buff << std::endl;
-    return RecvData(senderAddr, buff);
+    std::cout
+        << "[PhysicalLayer] Received data From "
+        << ap.addr << ":" << ap.port << "-->" << std::endl
+        << buff << std::endl;
+
+    return RecvData{ap, buff};
 }
 
-int PhysicalLayer::startRecvTask() {
-    std::thread recvTask([this] {
+int PhysicalLayer::startRecvTask(void* queuePtr,void (*callback)(void*, RecvData)) {
+    std::thread recvTask([this, callback,queuePtr] {
         while (this->onRecvTask) {
             RecvData data = this->recvData();
             std::cout << "[PhysicalLayer][RecvTask] onRecv!" << std::endl;
             // msg.push_one((pi){"recv_data", tmpp});
+            if (queuePtr!=nullptr && callback != nullptr) {
+                callback(queuePtr,data);
+            }
         }
     });
     this->onRecvTask = true;

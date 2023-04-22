@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 02:32:34
+ * @LastEditTime : 2023-04-23 05:44:17
  */
 
 #include <iostream>
@@ -59,6 +59,7 @@ int main() {
     DataLinkLayer dll(cfg);
     dll.init();
 
+    // dll.test_timer();
     // use two threads ad producer and consumer to test BlockingQueue
 
     // test BlockingQueue
@@ -84,6 +85,11 @@ int main() {
     // });
     // producer.join();
     // consumer.join();
-    cout << "Press any key to continue..." << endl;
-    getchar();
+    while (true) {
+        // pause in cmd
+        cout << "Press any key to continue..." << endl;
+        getchar();
+
+        dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, inet_addr("127.0.0.1")},"Hello World!");
+    }
 }

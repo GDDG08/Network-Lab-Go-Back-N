@@ -46,7 +46,9 @@ class Timer {
     }
     void stop() {
         isRunning = false;
-        timerThread.detach();
+        if (timerThread.joinable()) {
+            timerThread.detach();
+        }
     }
     ~Timer() {
         stop();

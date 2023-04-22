@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 15:13:27
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 00:31:44
+ * @LastEditTime : 2023-04-23 05:16:29
  */
 #ifndef PHYSICALLAYER_HPP
 #define PHYSICALLAYER_HPP
@@ -15,12 +15,20 @@
 #include <string>
 #include <thread>
 #include <winsock2.h>
+#include <functional>
 #include "..\toolkit\config.hpp"
 
 // #pragma comment(lib, "ws2_32.lib")
 
-typedef std::pair<sockaddr_in, std::string> RecvData;
+typedef struct {
+    int port = 0;
+    ULONG addr = INADDR_BROADCAST;
+} PhyAddrPort;
 
+typedef struct {
+    PhyAddrPort ap;
+    std::string buff;
+} RecvData;
 class PhysicalLayer {
    private:
     const static int BUFF_LEN = 1024;
@@ -33,9 +41,9 @@ class PhysicalLayer {
    public:
     PhysicalLayer(Config::ConfigBean cfg);
     int init();
-    int sendData(std::string info, int dst_port, ULONG dst_addr = INADDR_BROADCAST);
+    int sendData(std::string info, PhyAddrPort ap);
     RecvData recvData();
-    int startRecvTask();
+    int startRecvTask(void* queuePtr = nullptr, void (*callback)(void*, RecvData) = nullptr);
     int stopRecvTask();
     ~PhysicalLayer();
 };

@@ -23,5 +23,6 @@ std::string int2hex(T num) {
     ss << std::hex << std::uppercase << std::setw(sizeof(T)) << std::setfill('0') << num;
     return ss.str();
 }
-
+class Debug {
+};
 #endif  // DEBUG_HPP

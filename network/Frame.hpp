@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 17:05:53
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 01:49:12
+ * @LastEditTime : 2023-04-23 03:32:05
  */
 #ifndef FRAME_HPP
 #define FRAME_HPP
@@ -26,23 +26,30 @@ typedef enum FRAME_TYPE {
 class Frame {
    public:
     // uint16_t len = 0;
-    FRAME_TYPE type = FRAME_TYPE::END;
-    uint8_t seq = 0;
-    uint8_t ack = 0;
+    class Header {
+       public:
+        FRAME_TYPE type = FRAME_TYPE::END;
+        uint8_t seq = 0;
+        uint8_t ack = 0;
+        Header(FRAME_TYPE type, uint8_t seq, uint8_t ack)
+            : type(type), seq(seq), ack(ack) {}
+        Header() {}
+    };
+    Header header;
     std::string info = "";
     uint16_t checksum = 0;
 
     Frame(FRAME_TYPE type, uint8_t seq, uint8_t ack, std::string info)
-        : type(type), seq(seq), ack(ack), info(info) {
+        : header(type, seq, ack), info(info) {
         std::string buff = to_buff_head() + info;
         checksum = CheckCRC::calc(buff);
     }
 
     // construct Frame from buff
     Frame(std::string buff) {
-        type = (FRAME_TYPE)buff[0];
-        seq = buff[1];
-        ack = buff[2];
+        header.type = (FRAME_TYPE)buff[0];
+        header.seq = buff[1];
+        header.ack = buff[2];
         uint16_t len = (buff[3] << 8) | buff[4];
         info = buff.substr(5, len);
         checksum = (buff[5 + len] << 8) | buff[6 + len];
@@ -55,9 +62,7 @@ class Frame {
     }
 
     Frame& operator=(const Frame& f) {
-        this->type = f.type;
-        this->seq = f.seq;
-        this->ack = f.ack;
+        this->header = f.header;
         this->info = f.info;
         this->checksum = f.checksum;
         return *this;
@@ -69,9 +74,9 @@ class Frame {
         buff.resize(5);
 
         uint16_t len = info.length();
-        buff[0] = type;
-        buff[1] = seq;
-        buff[2] = ack;
+        buff[0] = header.type;
+        buff[1] = header.seq;
+        buff[2] = header.ack;
         buff[3] = (len >> 8) & 0xff;
         buff[4] = len & 0xff;
         return buff;
@@ -90,8 +95,8 @@ class Frame {
 
     // print Frame withour info
     void print() {
-        std::cout << "Frame: type=" << type << " seq=" << (int)seq
-                  << " ack=" << (int)ack << " len=" << info.length()
+        std::cout << "Frame: type=" << header.type << " seq=" << (int)header.seq
+                  << " ack=" << (int)header.ack << " len=" << info.length()
                   << " checksum=" << int2hex(checksum) << "[" << verify() << "]" << std::endl;
     }
 };
