@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 15:13:27
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 05:16:29
+ * @LastEditTime : 2023-04-23 13:22:58
  */
 #ifndef PHYSICALLAYER_HPP
 #define PHYSICALLAYER_HPP
@@ -17,18 +17,30 @@
 #include <winsock2.h>
 #include <functional>
 #include "..\toolkit\config.hpp"
+#include "..\toolkit\debug.hpp"
 
 // #pragma comment(lib, "ws2_32.lib")
 
 typedef struct {
     int port = 0;
-    ULONG addr = INADDR_BROADCAST;
+    std::string addr = "255.255.255.255";
 } PhyAddrPort;
 
-typedef struct {
+class RecvData {
+   public:
     PhyAddrPort ap;
     std::string buff;
-} RecvData;
+    RecvData(PhyAddrPort ap, const char* buff_c, int size)
+        : ap(ap) {
+        // buff.resize(size);
+        // // convert buff_c to buff for certain size of data
+        // for (int i = 0; i < size; i++) {
+        //     buff[i] = buff_c[i];
+        // }
+        buff=std::string(buff_c, size);
+    }
+    RecvData() {}
+};
 class PhysicalLayer {
    private:
     const static int BUFF_LEN = 1024;

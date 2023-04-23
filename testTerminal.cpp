@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 05:44:17
+ * @LastEditTime : 2023-04-23 12:29:15
  */
 
 #include <iostream>
@@ -53,7 +53,7 @@ int main() {
     //     cout << "Press any key to continue..." << endl;
     //     getchar();
 
-    //     pl.sendData("Hello World!", PORT_TEST, inet_addr("127.0.0.1"));
+    //     pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"});
     // }
 
     DataLinkLayer dll(cfg);
@@ -90,6 +90,6 @@ int main() {
         cout << "Press any key to continue..." << endl;
         getchar();
 
-        dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, inet_addr("127.0.0.1")},"Hello World!");
+        dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "Hello World!");
     }
 }

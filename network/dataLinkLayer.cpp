@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 05:37:33
+ * @LastEditTime : 2023-04-23 14:12:28
  */
 #include "dataLinkLayer.hpp"
 
@@ -31,7 +31,6 @@ void DataLinkLayer::init() {
     eventQueue = new GBNEventQueue();
     init_timer(); /* initialize the timer */
 
-    physicalLayer->startRecvTask(&this->eventQueue, onPhysicalLayerRx);
     isRunning = true;
     eventHandler = std::thread([this]() {
         while (isRunning) {
@@ -39,6 +38,8 @@ void DataLinkLayer::init() {
         }
     });
 
+    physicalLayer->startRecvTask(this, onPhysicalLayerRx);
+    // physicalLayer->startRecvTask();
     enable_network_layer(); /* allow network layer ready events */
 }
 DataLinkLayer::~DataLinkLayer() {
@@ -49,14 +50,14 @@ DataLinkLayer::~DataLinkLayer() {
 }
 
 inline bool DataLinkLayer::between(uint8_t a, uint8_t b, uint8_t c) {
-    /* Return true if a <= b < c circularly; false otherwise. */
-    if (((a <= b) && (b < c)) || ((c < a) && (a <= b)) || ((b < c) && (c < a)))
+    /* Return true if a < b <= c circularly; false otherwise. */
+    if (((a < b) && (b <= c)) || ((c <= a) && (a < b)) || ((b <= c) && (c < a)))
         return (true);
     else
         return (false);
 }
 
-inline int DataLinkLayer::inc(uint8_t num) {
+inline int DataLinkLayer::inc(uint8_t& num) {
     if (num < MAX_SEQ)
         num++;
     else
@@ -77,16 +78,21 @@ int DataLinkLayer::sendData(PhyAddrPort ap, std::string packet) {
     start_timer(next_frame_to_send); /* start the timer running */
     return 0;
 }
+// @Todo: piggyback ack
 int DataLinkLayer::sendACK(PhyAddrPort ap) {
+    if (!isACKsent)
+        return 1;
     isACKsent = false;
-    Timer ackTime([ap, this]() {
-        if (this->isACKsent) {
-            return;
-        }
-        Frame s(FRAME_TYPE::ACK, 0, frame_expected, "");
-        physicalLayer->sendData(s.to_buff_all(), ap);
-    },
-                  TIMEOUT / 10);
+    // Timer ackTime([ap, this]() {
+    //     if (this->isACKsent) {
+    //         return;
+    //     }
+    Frame s(FRAME_TYPE::ACK, 0, this->frame_expected, "");
+    physicalLayer->sendData(s.to_buff_all(), ap);
+    isACKsent = true;
+    // },
+    //               TIMEOUT / 100);
+    // ackTime.start();
     return 0;
 }
 int DataLinkLayer::sendNAK(PhyAddrPort ap, uint8_t seq) {
@@ -112,7 +118,7 @@ void DataLinkLayer::handleEvents() {
     PhyAddrPort ap = event.ap;
     switch (event.type) {
         case GBN_EVENT_TYPE::NETWORK_LAYER_READY: /* the network layer has a packet to send */
-            std::cout << "[DataLinkLayer][INFO] NETWORK_LAYER_READY sending " << next_frame_to_send << std::endl;
+            std::cout << "[DataLinkLayer][INFO] NETWORK_LAYER_READY sending " << int(next_frame_to_send) << std::endl;
             /* Accept, save, and transmit a new frame. */
             buffer[next_frame_to_send] = event; /* insert event into buffer */
             nbuffered++;                        /* expand the sender’s window */
@@ -126,10 +132,10 @@ void DataLinkLayer::handleEvents() {
                     std::cout << "[DataLinkLayer][INFO] header.type DATA" << std::endl;
                     /* Frames are accepted only in order. */
                     if (header.seq == frame_expected) {
-                        std::cout << "[DataLinkLayer][INFO] header.type DATA accepted" << std::endl;
+                        std::cout << "[DataLinkLayer][INFO] header.type DATA accepted" << int(frame_expected) << std::endl;
                         // to_network_layer(&r->info); /* pass packet to network layer */
-                        sendACK(ap);         /* acknowledge the frame */
                         inc(frame_expected); /* advance lower edge of receiver’s window */
+                        sendACK(ap);         /* acknowledge the frame */
                     }
                     // break; //support data with ack
                 case FRAME_TYPE::ACK:
@@ -137,15 +143,15 @@ void DataLinkLayer::handleEvents() {
                     /* Ack n implies n − 1, n − 2, etc. Check for this. */
 
                     while (between(ack_expected, header.ack, next_frame_to_send)) {
-                        std::cout << "[DataLinkLayer][INFO] header.type ACK accept " << ack_expected << std::endl;
+                        std::cout << "[DataLinkLayer][INFO] header.type ACK accept " << int(ack_expected) << std::endl;
                         /* Handle piggybacked ack. */
-                        nbuffered--;            /* one frame fewer buffered */
-                        stop_timer(header.ack); /* frame arrived intact; stop timer */
-                        inc(ack_expected);      /* contract sender’s window */
+                        nbuffered--;              /* one frame fewer buffered */
+                        stop_timer(ack_expected); /* frame arrived intact; stop timer */
+                        inc(ack_expected);        /* contract sender’s window */
                     }
                     break;
                 case FRAME_TYPE::NAK:
-                    std::cout << "[DataLinkLayer][INFO] header.type NAK go back to " << header.ack << std::endl;
+                    std::cout << "[DataLinkLayer][INFO] header.type NAK go back to " << int(header.ack) << std::endl;
                     /* Sender will receive frame_expected − 1 next time. */
                     next_frame_to_send = header.ack; /* start retransmitting here */
                     reSendAllData();                 /* resend buffered frames */
@@ -156,11 +162,11 @@ void DataLinkLayer::handleEvents() {
             }
             break;
         case GBN_EVENT_TYPE::CKSUM_ERR:
-            std::cout << "[DataLinkLayer][ERROR] Checksum error for " << header.seq << std::endl;
+            std::cout << "[DataLinkLayer][ERROR] Checksum error for " << int(header.seq) << std::endl;
             sendNAK(ap, header.seq);
             break;
         case GBN_EVENT_TYPE::TIMEOUT: /* trouble; retransmit all outstanding frames */
-            std::cout << "[DataLinkLayer][TIMEOUT] go back to " << ack_expected << std::endl;
+            std::cout << "[DataLinkLayer][TIMEOUT] go back to " << int(ack_expected) << std::endl;
             next_frame_to_send = ack_expected; /* start retransmitting here */
             reSendAllData();                   /* resend buffered frames */
     }
@@ -173,7 +179,7 @@ void DataLinkLayer::handleEvents() {
 void DataLinkLayer::init_timer() {
     timerList.clear();
     // timerList.resize(SW_SIZE);
-    for (size_t i = 0; i < MAX_SEQ; i++) {
+    for (size_t i = 0; i < MAX_SEQ + 1; i++) {
         Timer* t = new Timer([this, i] {
             unique_lock<mutex> lock(mtx_timer);
             std::cout << "[DataLinkLayer] time out for seq_id " << i << endl;
@@ -184,7 +190,7 @@ void DataLinkLayer::init_timer() {
             this->eventQueue->put({
                 GBN_EVENT_TYPE::TIMEOUT,
                 Frame::Header(),
-                NULL,
+                "",
                 PhyAddrPort(),
             });
         },
@@ -210,11 +216,11 @@ void DataLinkLayer::disable_network_layer() {
     std::cout << "[DataLinkLayer] disable network layer" << std::endl;
 }
 
-void DataLinkLayer::onPhysicalLayerRx(void* queuePtr, RecvData data) {
-    GBNEventQueue* eventQueue_ = (GBNEventQueue*)queuePtr;
+void DataLinkLayer::onPhysicalLayerRx(void* classPtr, RecvData data) {
+    DataLinkLayer* class_ = (DataLinkLayer*)classPtr;
     Frame frame(data.buff);
     if (frame.verify()) {
-        eventQueue_->put({
+        class_->eventQueue->put({
             GBN_EVENT_TYPE::FRAME_ARRIVAL,
             frame.header,
             frame.info,
@@ -222,7 +228,7 @@ void DataLinkLayer::onPhysicalLayerRx(void* queuePtr, RecvData data) {
         });
     } else {
         // @Todo:如果ack有问题咋办
-        eventQueue_->put({
+        class_->eventQueue->put({
             GBN_EVENT_TYPE::CKSUM_ERR,
             frame.header,
             frame.info,

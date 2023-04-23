@@ -51,7 +51,7 @@ class DataLinkLayer {
     // mutex mtx_ack;
 
     inline bool between(uint8_t a, uint8_t b, uint8_t c);
-    inline int inc(uint8_t num);
+    inline int inc(uint8_t& num);
     void init_timer();
     void start_timer(uint8_t seq);
     void stop_timer(uint8_t seq);

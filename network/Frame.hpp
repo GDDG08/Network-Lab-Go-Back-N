@@ -52,7 +52,7 @@ class Frame {
         header.ack = buff[2];
         uint16_t len = (buff[3] << 8) | buff[4];
         info = buff.substr(5, len);
-        checksum = (buff[5 + len] << 8) | buff[6 + len];
+        checksum = ((buff[5 + len] & 0xff) << 8) | (buff[6 + len] & 0xff);
     }
 
     // check checksum
@@ -70,26 +70,35 @@ class Frame {
 
     // convert Frame to buff to send
     std::string to_buff_head() {
-        std::string buff;
-        buff.resize(5);
+        std::string buff = "";
 
         uint16_t len = info.length();
-        buff[0] = header.type;
-        buff[1] = header.seq;
-        buff[2] = header.ack;
-        buff[3] = (len >> 8) & 0xff;
-        buff[4] = len & 0xff;
+        buff += header.type;
+        buff += header.seq;
+        buff += header.ack;
+        buff += (len >> 8) & 0xff;
+        buff += len & 0xff;
+
+        // std::string buff;
+        // buff.resize(5);
+
+        // uint16_t len = info.length();
+        // buff[0] = header.type;
+        // buff[1] = header.seq;
+        // buff[2] = header.ack;
+        // buff[3] = (len >> 8) & 0xff;
+        // buff[4] = len & 0xff;
         return buff;
     }
 
     std::string to_buff_all() {
-        std::string buff_head = to_buff_head();
-        std::string buff;
-        buff = buff_head + info;
+        std::string buff = to_buff_head() + info;
+        buff += (checksum >> 8) & 0xff;
+        buff += checksum & 0xff;
 
-        buff.resize(buff_head.length() + info.length() + 2);
-        buff[buff.length() - 2] = (checksum >> 8) & 0xff;
-        buff[buff.length() - 1] = checksum & 0xff;
+        // buff.resize(buff_head.length() + info.length() + 2);
+        // buff[buff.length() - 2] = (checksum >> 8) & 0xff;
+        // buff[buff.length() - 1] = checksum & 0xff;
         return buff;
     }
 

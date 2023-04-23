@@ -15,7 +15,7 @@ std::string str2hex(const std::string& str) {
 
     for (int i = 0; i < str.size(); i++) {
         unsigned c = ((unsigned)str[i]) & 0xff;
-        ss << c;
+        ss << std::setw(2) << std::setfill('0') <<c;
     }
     return ss.str();
 }

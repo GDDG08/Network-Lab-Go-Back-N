@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 05:34:00
+ * @LastEditTime : 2023-04-23 13:31:02
  */
 #include "physicalLayer.hpp"
 
@@ -51,12 +51,12 @@ int PhysicalLayer::sendData(std::string info, PhyAddrPort ap) {
     // Set up the address and port to send data to
     sockaddr_in dstAddr;
     dstAddr.sin_family = AF_INET;
-    dstAddr.sin_port = htons(ap.port);  // Port number
-    dstAddr.sin_addr.s_addr = ap.addr;  // IP address
+    dstAddr.sin_port = htons(ap.port);                     // Port number
+    dstAddr.sin_addr.s_addr = inet_addr(ap.addr.c_str());  // IP address
 
     // Send data
     const char* sendData = info.data();
-    int sendResult = sendto(sock, sendData, strlen(sendData), 0, (sockaddr*)&dstAddr, sizeof(dstAddr));
+    int sendResult = sendto(sock, sendData, info.length(), 0, (sockaddr*)&dstAddr, sizeof(dstAddr));
     if (sendResult == SOCKET_ERROR) {
         std::cerr << "[PhysicalLayer][Error] sendto failed with error: " << WSAGetLastError() << std::endl;
         closesocket(sock);
@@ -65,7 +65,7 @@ int PhysicalLayer::sendData(std::string info, PhyAddrPort ap) {
     }
     std::cout << "[PhysicalLayer] Sent data To "
               << inet_ntoa(dstAddr.sin_addr) << ":" << ntohs(dstAddr.sin_port) << "-->" << std::endl
-              << info << std::endl;
+              << str2hex(info) << std::endl;
     return 0;
 }
 
@@ -76,6 +76,7 @@ RecvData PhysicalLayer::recvData() {
     sockaddr_in senderAddr;
     int senderAddrSize = sizeof(senderAddr);
     // use recvfrom to get sender ip port
+    // int recvResult = recv(sock, buff, BUFF_LEN, 0);
     int recvResult = recvfrom(sock, buff, BUFF_LEN, 0, (sockaddr*)&senderAddr, &senderAddrSize);
     if (recvResult == SOCKET_ERROR) {
         std::cerr << "[PhysicalLayer][Error] recv failed with error: " << WSAGetLastError() << std::endl;
@@ -84,24 +85,31 @@ RecvData PhysicalLayer::recvData() {
         // exit(1);
         return RecvData();
     }
-    PhyAddrPort ap = {senderAddr.sin_port, senderAddr.sin_addr.s_addr};
+    if (recvResult == 0) {
+        return RecvData();
+    }
+
+    PhyAddrPort ap = {ntohs(senderAddr.sin_port), inet_ntoa(senderAddr.sin_addr)};
+    RecvData rd(ap, buff, recvResult);
     // Display the received data
     std::cout
         << "[PhysicalLayer] Received data From "
         << ap.addr << ":" << ap.port << "-->" << std::endl
-        << buff << std::endl;
+        << str2hex(rd.buff) << std::endl;
 
-    return RecvData{ap, buff};
+    return rd;
 }
 
-int PhysicalLayer::startRecvTask(void* queuePtr,void (*callback)(void*, RecvData)) {
-    std::thread recvTask([this, callback,queuePtr] {
+int PhysicalLayer::startRecvTask(void* queuePtr, void (*callback)(void*, RecvData)) {
+    std::thread recvTask([this, callback, queuePtr] {
         while (this->onRecvTask) {
             RecvData data = this->recvData();
             std::cout << "[PhysicalLayer][RecvTask] onRecv!" << std::endl;
             // msg.push_one((pi){"recv_data", tmpp});
-            if (queuePtr!=nullptr && callback != nullptr) {
-                callback(queuePtr,data);
+            // if (data.buff[0] == '\0')
+            //     continue;
+            if (queuePtr != nullptr && callback != nullptr) {
+                callback(queuePtr, data);
             }
         }
     });
