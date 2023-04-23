@@ -1,3 +1,5 @@
 *.o
 *.exe
 build/
+bin/test2.txt
+bin/recv1/test2.txt

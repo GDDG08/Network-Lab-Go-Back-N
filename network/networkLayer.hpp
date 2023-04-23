@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 12:33:33
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 19:41:45
+ * @LastEditTime : 2023-04-23 22:53:24
  */
 
 #ifndef NETWORKLAYER_HPP
@@ -18,7 +18,6 @@
 
 typedef BlockingQueue<RecvData> PacketQueue;
 
-
 typedef struct {
     unsigned long long fileID;
     unsigned long long fileSize;
@@ -28,7 +27,7 @@ typedef struct {
 
 class NetworkLayer {
    private:
-   Config::ConfigBean cfg;
+    Config::ConfigBean cfg;
     PacketQueue* packetQueue;
     DataLinkLayer* dataLinkLayer;
 
@@ -36,7 +35,7 @@ class NetworkLayer {
     std::thread packetHandler;
 
     std::map<unsigned long long, FileInfo> filesMap;
-    const static int FILE_FRAME_SIZE=512;
+    const static int FILE_FRAME_SIZE = 512;
     unsigned long long FileID = 0;
     void handlePackets();
 
@@ -49,6 +48,5 @@ class NetworkLayer {
 
     void init();
 };
-
 
 #endif  // NETWORKLAYER_HPP

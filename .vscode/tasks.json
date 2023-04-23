@@ -35,7 +35,9 @@
             "type": "shell",
             "label": "makeRun",
             "command": "mingw32-make",
-            "args": [],
+            "args": [
+                "-j8"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}/build"
             },

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:59:13
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 22:38:48
+ * @LastEditTime : 2023-04-24 00:15:46
  */
 
 #include "networkLayer.hpp"
@@ -83,27 +83,28 @@ int NetworkLayer::sendFile(PhyAddrPort ap, std::string path) {
     // std::cout << buff << size << std::endl;
     // file.close();
 
-    // std::thread sendFileT([this, ap, fInfo, path]() {
-    FILE* file = fopen(path.c_str(), "rb");
+    std::thread sendFileT([this, ap, fInfo, path]() {
+        FILE* file = fopen(path.c_str(), "rb");
 
-    unsigned packetNum = fInfo.fileSize / FILE_FRAME_SIZE + 1;
+        unsigned packetNum = fInfo.fileSize / FILE_FRAME_SIZE + 1;
 
-    for (int i = 0; i < packetNum; i++) {
-        char buff[FILE_FRAME_SIZE];
+        for (int i = 0; i < packetNum; i++) {
+            char buff[FILE_FRAME_SIZE];
 
-        int size = fread(buff, 1, FILE_FRAME_SIZE, file);
-        FileBuffInfo bInfo(fInfo.fileID, i * FILE_FRAME_SIZE, buff, size);
-        Packet fileBuffPacket(PACKET_TYPE::FILE_BUF, bInfo.to_buff());
-        dataLinkLayer->onNetworkLayerTx(ap, fileBuffPacket.to_buff());
-    }
+            int size = fread(buff, 1, FILE_FRAME_SIZE, file);
+            FileBuffInfo bInfo(fInfo.fileID, i * FILE_FRAME_SIZE, buff, size);
+            Packet fileBuffPacket(PACKET_TYPE::FILE_BUF, bInfo.to_buff());
+            dataLinkLayer->onNetworkLayerTx(ap, fileBuffPacket.to_buff());
+        }
 
-    // send File Finish
-    FileFinishInfo fFinishInfo(fInfo.fileID);
-    Packet fileFinishPacket(PACKET_TYPE::FILE_FIN, fFinishInfo.to_buff());
-    dataLinkLayer->onNetworkLayerTx(ap, fileFinishPacket.to_buff());
+        // send File Finish
+        FileFinishInfo fFinishInfo(fInfo.fileID);
+        Packet fileFinishPacket(PACKET_TYPE::FILE_FIN, fFinishInfo.to_buff());
+        dataLinkLayer->onNetworkLayerTx(ap, fileFinishPacket.to_buff());
 
-    fclose(file);
-    // });
+        fclose(file);
+    });
+    sendFileT.detach();
     return 0;
 }
 
