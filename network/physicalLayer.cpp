@@ -100,16 +100,16 @@ RecvData PhysicalLayer::recvData() {
     return rd;
 }
 
-int PhysicalLayer::startRecvTask(void* queuePtr, void (*callback)(void*, RecvData)) {
-    std::thread recvTask([this, callback, queuePtr] {
+int PhysicalLayer::startRecvTask(void* dllPtr, void (*callback)(void*, RecvData)) {
+    std::thread recvTask([this, callback, dllPtr] {
         while (this->onRecvTask) {
             RecvData data = this->recvData();
             std::cout << "[PhysicalLayer][RecvTask] onRecv!" << std::endl;
             // msg.push_one((pi){"recv_data", tmpp});
             // if (data.buff[0] == '\0')
             //     continue;
-            if (queuePtr != nullptr && callback != nullptr) {
-                callback(queuePtr, data);
+            if (dllPtr != nullptr && callback != nullptr) {
+                callback(dllPtr, data);
             }
         }
     });

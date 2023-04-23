@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 15:13:27
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 13:22:58
+ * @LastEditTime : 2023-04-23 14:56:11
  */
 #ifndef PHYSICALLAYER_HPP
 #define PHYSICALLAYER_HPP
@@ -37,7 +37,10 @@ class RecvData {
         // for (int i = 0; i < size; i++) {
         //     buff[i] = buff_c[i];
         // }
-        buff=std::string(buff_c, size);
+        buff = std::string(buff_c, size);
+    }
+    RecvData(PhyAddrPort ap, std::string packet)
+        : ap(ap), buff(packet) {
     }
     RecvData() {}
 };

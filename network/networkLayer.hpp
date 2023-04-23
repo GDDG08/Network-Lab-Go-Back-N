@@ -3,13 +3,17 @@
 
 
 #include "dataLinkLayer.hpp"
+#include "Packet.hpp"
 
 class NetworkLayer {
-    private:
-    DataLinkLayer *dataLinkLayer;
+    // private:
    public:
+    DataLinkLayer *dataLinkLayer;
     NetworkLayer(Config::ConfigBean cfg);
     ~NetworkLayer();
+    int sendFile(PhyAddrPort ap ,std::string path);
+    static void onDataLinkLayerRx(void *, RecvData data);
+
     void init();
 };
 

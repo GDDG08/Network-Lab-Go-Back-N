@@ -24,6 +24,8 @@ typedef BlockingQueue<GBN_EVENT> GBNEventQueue;
 
 class DataLinkLayer {
    private:
+    void (*callbackFunc)(void*, RecvData)=nullptr;
+    void* networkLayerPtr=nullptr;
     PhysicalLayer* physicalLayer;
     std::thread eventHandler;
     bool isRunning = false;
@@ -36,6 +38,8 @@ class DataLinkLayer {
     GBN_EVENT buffer[MAX_SEQ + 1];  /* buffers for the outbound stream */
     uint8_t nbuffered;               /* number of output buffers currently in use */
     GBN_EVENT_TYPE event;
+
+    bool isNetworkLayerEnabled = false;
 
     int DATA_SIZE;
     int ERROR_RATE;
@@ -58,6 +62,7 @@ class DataLinkLayer {
 
     void enable_network_layer();
     void disable_network_layer();
+    void to_network_layer(PhyAddrPort ap, std::string packet);
 
     int sendData(PhyAddrPort ap ,std::string packet);
     int reSendAllData();
@@ -65,7 +70,7 @@ class DataLinkLayer {
     int sendNAK(PhyAddrPort ap, uint8_t seq);
     void handleEvents();
    public:
-    DataLinkLayer(Config::ConfigBean cfg);
+    DataLinkLayer(Config::ConfigBean cfg, void *nlPtr=nullptr, void (*callback)(void*, RecvData)=nullptr);
     ~DataLinkLayer();
     void init();
     static void onPhysicalLayerRx(void * queuePtr,RecvData data);

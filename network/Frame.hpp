@@ -16,7 +16,7 @@
 #include "..\toolkit\checkCRC.hpp"
 #include "..\toolkit\debug.hpp"
 
-typedef enum FRAME_TYPE {
+typedef enum {
     DATA = 0,
     ACK = 1,
     NAK = 2,

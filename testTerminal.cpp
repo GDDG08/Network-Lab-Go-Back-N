@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 12:29:15
+ * @LastEditTime : 2023-04-23 15:57:48
  */
 
 #include <iostream>
@@ -14,6 +14,7 @@ using namespace std;
 
 #include "network\physicalLayer.hpp"
 #include "network\dataLinkLayer.hpp"
+#include "network\networkLayer.hpp"
 #include "toolkit\config.hpp"
 #include "toolkit\checkCRC.hpp"
 #include "toolkit\debug.hpp"
@@ -56,8 +57,8 @@ int main() {
     //     pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"});
     // }
 
-    DataLinkLayer dll(cfg);
-    dll.init();
+    // DataLinkLayer dll(cfg);
+    // dll.init();
 
     // dll.test_timer();
     // use two threads ad producer and consumer to test BlockingQueue
@@ -85,11 +86,14 @@ int main() {
     // });
     // producer.join();
     // consumer.join();
+
+    NetworkLayer nl(cfg);
+    nl.init();
     while (true) {
         // pause in cmd
         cout << "Press any key to continue..." << endl;
         getchar();
 
-        dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "Hello World!");
+        nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
     }
 }

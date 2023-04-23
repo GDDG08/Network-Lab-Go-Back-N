@@ -5,12 +5,14 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 14:12:28
+ * @LastEditTime : 2023-04-23 16:11:59
  */
 #include "dataLinkLayer.hpp"
 
-DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg) {
+DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, void* nlPtr, void (*callback)(void*, RecvData)) {
     physicalLayer = new PhysicalLayer(cfg);
+    networkLayerPtr = nlPtr;
+    callbackFunc = callback;
 
     DATA_SIZE = cfg.dataSize;
     SW_SIZE = cfg.swSize;
@@ -133,9 +135,9 @@ void DataLinkLayer::handleEvents() {
                     /* Frames are accepted only in order. */
                     if (header.seq == frame_expected) {
                         std::cout << "[DataLinkLayer][INFO] header.type DATA accepted" << int(frame_expected) << std::endl;
-                        // to_network_layer(&r->info); /* pass packet to network layer */
-                        inc(frame_expected); /* advance lower edge of receiver’s window */
-                        sendACK(ap);         /* acknowledge the frame */
+                        to_network_layer(ap, packet); /* pass packet to network layer */
+                        inc(frame_expected);          /* advance lower edge of receiver’s window */
+                        sendACK(ap);                  /* acknowledge the frame */
                     }
                     // break; //support data with ack
                 case FRAME_TYPE::ACK:
@@ -209,11 +211,18 @@ void DataLinkLayer::start_timer(uint8_t frame_num) {
 }
 
 void DataLinkLayer::enable_network_layer() {
-    std::cout << "[DataLinkLayer] enable network layer" << std::endl;
+    // std::cout << "[DataLinkLayer] enable network layer" << std::endl;
+    isNetworkLayerEnabled = true;
 }
 
 void DataLinkLayer::disable_network_layer() {
-    std::cout << "[DataLinkLayer] disable network layer" << std::endl;
+    // std::cout << "[DataLinkLayer] disable network layer" << std::endl;
+    isNetworkLayerEnabled = false;
+}
+
+void DataLinkLayer::to_network_layer(PhyAddrPort ap, std::string packet) {
+    // std::cout << "[DataLinkLayer] to network layer" << std::endl;
+    callbackFunc(networkLayerPtr, RecvData(ap, packet));
 }
 
 void DataLinkLayer::onPhysicalLayerRx(void* classPtr, RecvData data) {
@@ -238,6 +247,11 @@ void DataLinkLayer::onPhysicalLayerRx(void* classPtr, RecvData data) {
 }
 
 void DataLinkLayer::onNetworkLayerTx(PhyAddrPort ap, std::string packet) {
+    // wait for isNetworkLayerEnabled to be true
+    while (!isNetworkLayerEnabled) {
+        // this thread sleep for 10ms
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
     eventQueue->put({GBN_EVENT_TYPE::NETWORK_LAYER_READY,
                      Frame::Header(),
                      packet,
