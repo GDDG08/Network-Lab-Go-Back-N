@@ -34,6 +34,7 @@ class Config {
         int swSize;
         int initSeqNo;
         int timeout;
+        std::string savePath;
 
         void printConfig() {
             cout << "======== Config ========" << endl;
@@ -44,6 +45,7 @@ class Config {
             cout << "SWSize: " << swSize << endl;
             cout << "InitSeqNo: " << initSeqNo << endl;
             cout << "Timeout: " << timeout << endl;
+            cout << "SavePath: " << savePath << endl;
             cout << "========================" << endl;
         }
     };

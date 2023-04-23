@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 15:57:48
+ * @LastEditTime : 2023-04-23 20:15:07
  */
 
 #include <iostream>
@@ -86,6 +86,13 @@ int main() {
     // });
     // producer.join();
     // consumer.join();
+    // uint16_t len = 0xF234;
+    // std::string buff = "";
+    // buff += (len >> 8);
+    // buff += len;
+    // cout << str2hex(buff) << endl;
+    // uint16_t len2 = (buff[0] << 8) | buff[1];
+    // cout << int2hex(len2) << endl;
 
     NetworkLayer nl(cfg);
     nl.init();
@@ -94,6 +101,8 @@ int main() {
         cout << "Press any key to continue..." << endl;
         getchar();
 
-        nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+        // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+        // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+        nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
     }
 }

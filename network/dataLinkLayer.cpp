@@ -5,12 +5,13 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 16:11:59
+ * @LastEditTime : 2023-04-23 16:22:13
  */
 #include "dataLinkLayer.hpp"
 
 DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, void* nlPtr, void (*callback)(void*, RecvData)) {
     physicalLayer = new PhysicalLayer(cfg);
+    eventQueue = new GBNEventQueue();
     networkLayerPtr = nlPtr;
     callbackFunc = callback;
 
@@ -23,23 +24,25 @@ DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, void* nlPtr, void (*callbac
 }
 
 void DataLinkLayer::init() {
-    physicalLayer->init();
 
     ack_expected = 0;       /* next ack_expected inbound */
     next_frame_to_send = 0; /* next frame going out */
     frame_expected = 0;     /* number of frame_expected inbound */
     nbuffered = 0;          /* initially no packets are buffered */
 
-    eventQueue = new GBNEventQueue();
     init_timer(); /* initialize the timer */
 
     isRunning = true;
     eventHandler = std::thread([this]() {
         while (isRunning) {
             this->handleEvents();
+
+            // debug
+            // std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
     });
 
+    physicalLayer->init();
     physicalLayer->startRecvTask(this, onPhysicalLayerRx);
     // physicalLayer->startRecvTask();
     enable_network_layer(); /* allow network layer ready events */
@@ -77,11 +80,12 @@ int DataLinkLayer::sendData(PhyAddrPort ap, std::string packet) {
     );
     physicalLayer->sendData(s.to_buff_all(), ap); /* transmit the frame */
     isACKsent = true;
-    start_timer(next_frame_to_send); /* start the timer running */
+    // start_timer(next_frame_to_send); /* start the timer running */
     return 0;
 }
 // @Todo: piggyback ack
 int DataLinkLayer::sendACK(PhyAddrPort ap) {
+    return 2;
     if (!isACKsent)
         return 1;
     isACKsent = false;

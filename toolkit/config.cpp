@@ -31,6 +31,7 @@ Config::ConfigBean Config::parseConfig() {
     cb.swSize = j["SWSize"];
     cb.initSeqNo = j["InitSeqNo"];
     cb.timeout = j["Timeout"];
+    cb.savePath = j["SavePath"];
 
     return cb;
 }
