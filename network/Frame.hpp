@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 17:05:53
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 03:32:05
+ * @LastEditTime : 2023-04-27 01:06:39
  */
 #ifndef FRAME_HPP
 #define FRAME_HPP
@@ -106,7 +106,7 @@ class Frame {
     void print() {
         std::cout << "Frame: type=" << header.type << " seq=" << (int)header.seq
                   << " ack=" << (int)header.ack << " len=" << info.length()
-                  << " checksum=" << int2hex(checksum) << "[" << verify() << "]" << std::endl;
+                  << " checksum=" << Debug::int2hex(checksum) << "[" << verify() << "]" << std::endl;
     }
 };
 

@@ -25,6 +25,7 @@
 class DataLinkLayer;
 
 class PhysicalLayer {
+    friend class Debug;
    private:
     const static int BUFF_LEN = 1024;
     int listen_port;
@@ -41,6 +42,7 @@ class PhysicalLayer {
     int startRecvTask(DataLinkLayer* queuePtr = nullptr);
     int stopRecvTask();
     ~PhysicalLayer();
+
 };
 
 #endif  // PHYSICALLAYER_HPP

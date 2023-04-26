@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\dataLinkLayer.cpp
+ * @FilePath     : \Code\network\dataLinkLayer.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:25:53
+ * @LastEditTime : 2023-04-27 01:25:02
  */
 #include "dataLinkLayer.hpp"
 #include "physicalLayer.hpp"
@@ -125,6 +125,7 @@ void DataLinkLayer::handleEvents() {
     switch (event.type) {
         case GBN_EVENT_TYPE::NETWORK_LAYER_READY: /* the network layer has a packet to send */
             std::cout << "[DataLinkLayer][INFO] NETWORK_LAYER_READY sending " << int(next_frame_to_send) << std::endl;
+            Debug::logAT(this, event.packetNo, event.type);
             /* Accept, save, and transmit a new frame. */
             buffer[next_frame_to_send] = event; /* insert event into buffer */
             nbuffered++;                        /* expand the sender’s window */
@@ -139,9 +140,13 @@ void DataLinkLayer::handleEvents() {
                     /* Frames are accepted only in order. */
                     if (header.seq == frame_expected) {
                         std::cout << "[DataLinkLayer][INFO] header.type DATA accepted" << int(frame_expected) << std::endl;
+                        Debug::logAR(this, header.seq, "OK");
+
                         to_network_layer(ap, packet); /* pass packet to network layer */
                         inc(frame_expected);          /* advance lower edge of receiver’s window */
                         sendACK(ap);                  /* acknowledge the frame */
+                    }else{
+                        Debug::logAR(this, header.seq, "NoErr");
                     }
                     // break; //support data with ack
                 case FRAME_TYPE::ACK:
@@ -166,9 +171,12 @@ void DataLinkLayer::handleEvents() {
                     std::cout << "[DataLinkLayer][ERROR] Unexpected frame type" << std::endl;
                     break;
             }
+            recvCount++;
+
             break;
         case GBN_EVENT_TYPE::CKSUM_ERR:
             std::cout << "[DataLinkLayer][ERROR] Checksum error for " << int(header.seq) << std::endl;
+            Debug::logAR(this, header.seq, "DataErr");
             sendNAK(ap, header.seq);
             break;
         case GBN_EVENT_TYPE::TIMEOUT: /* trouble; retransmit all outstanding frames */
@@ -260,7 +268,8 @@ void DataLinkLayer::onNetworkLayerTx(PhyAddrPort ap, std::string packet) {
     eventQueue->put({GBN_EVENT_TYPE::NETWORK_LAYER_READY,
                      Frame::Header(),
                      packet,
-                     ap});
+                     ap,
+                     packetCount++});
 }
 
 void DataLinkLayer::testDLL(PhyAddrPort ap) {

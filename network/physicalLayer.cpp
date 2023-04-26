@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:21:16
+ * @LastEditTime : 2023-04-27 01:10:38
  */
 #include "physicalLayer.hpp"
 #include "dataLinkLayer.hpp"
@@ -66,7 +66,7 @@ int PhysicalLayer::sendData(std::string info, PhyAddrPort ap) {
     }
     std::cout << "[PhysicalLayer] Sent data To "
               << inet_ntoa(dstAddr.sin_addr) << ":" << ntohs(dstAddr.sin_port) << "-->" << std::endl
-              << str2hex(info) << std::endl;
+              << Debug::str2hex(info) << std::endl;
     return 0;
 }
 
@@ -96,7 +96,7 @@ RecvData PhysicalLayer::recvData() {
     std::cout
         << "[PhysicalLayer] Received data From "
         << ap.addr << ":" << ap.port << "-->" << std::endl
-        << str2hex(rd.buff) << std::endl;
+        << Debug::str2hex(rd.buff) << std::endl;
 
     return rd;
 }

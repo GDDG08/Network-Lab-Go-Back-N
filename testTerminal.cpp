@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:19:40
+ * @LastEditTime : 2023-04-27 01:07:38
  */
 
 #include <iostream>
@@ -37,6 +37,7 @@ int main() {
         PORT_TEST = 12345;
     }
 
+    Debug::init("GBN_" HOST_ID);
     // PhysicalLayer pl(cfg);
     // pl.init();
 
@@ -47,7 +48,7 @@ int main() {
     // Frame tf(FRAME_TYPE::DATA, 0, 0, test);
     // tf.print();
 
-    // cout << "Buff " << str2hex(tf.to_buff_all()) << endl;
+    // cout << "Buff " << Debug::str2hex(tf.to_buff_all()) << endl;
 
     // while (true) {
     //     // pause in cmd
@@ -57,8 +58,8 @@ int main() {
     //     pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"});
     // }
 
-    DataLinkLayer dll(cfg);
-    dll.init();
+    // DataLinkLayer dll(cfg);
+    // dll.init();
 
     // dll.test_timer();
     // use two threads ad producer and consumer to test BlockingQueue
@@ -90,24 +91,24 @@ int main() {
     // std::string buff = "";
     // buff += (len >> 8);
     // buff += len;
-    // cout << str2hex(buff) << endl;
+    // cout << Debug::str2hex(buff) << endl;
     // uint16_t len2 = (buff[0] << 8) | buff[1];
-    // cout << int2hex(len2) << endl;
+    // cout << Debug::int2hex(len2) << endl;
 
-    // NetworkLayer nl(cfg);
-    // nl.init();
+    NetworkLayer nl(cfg);
+    nl.init();
     while (true) {
         // pause in cmd
         cout << "Press any key to continue..." << endl;
         getchar();
 
         // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+        nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
         // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
 
         // test ack piggyback
 
         // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+        // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
     }
 }

@@ -1,15 +1,16 @@
 /*
  * @Project      :
- * @FilePath     : \Code\network\DataStruct.hpp
+ * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\DataStruct.hpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-26 17:17:43
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:17:49
+ * @LastEditTime : 2023-04-27 01:00:11
  */
 #ifndef DATASTRUCT_HPP
 #define DATASTRUCT_HPP
 #include <string>
+
 
 typedef struct {
     int port = 0;
@@ -29,5 +30,12 @@ class RecvData {
     }
     RecvData() {}
 };
+
+typedef enum { FRAME_ARRIVAL,
+               CKSUM_ERR,
+               TIMEOUT,
+               RESEND,
+               NETWORK_LAYER_READY } GBN_EVENT_TYPE;
+
 
 #endif // DATASTRUCT_HPP

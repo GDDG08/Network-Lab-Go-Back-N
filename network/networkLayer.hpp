@@ -33,6 +33,8 @@ typedef struct {
 } FileInfo;
 
 class NetworkLayer {
+    friend class Debug;
+
    private:
     Config::ConfigBean cfg;
     PacketQueue* packetQueue;
