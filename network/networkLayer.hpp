@@ -14,6 +14,8 @@
 #include <iostream>
 #include <thread>
 #include <sys/stat.h>
+#include <io.h>
+#include <direct.h>
 #include "..\toolkit\msgQueue.hpp"
 #include "..\toolkit\config.hpp"
 #include "Packet.hpp"

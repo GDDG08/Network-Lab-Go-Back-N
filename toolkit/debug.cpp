@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 16:40:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:18:16
+ * @LastEditTime : 2023-04-27 01:47:11
  */
 #include "debug.hpp"
 
@@ -18,7 +18,12 @@ std::string Debug::logFile = "";
 std::ofstream Debug::logStream = std::ofstream();
 
 void Debug::init(std::string hostname) {
-    // logFile to be  hostname + current time formatted + log
+    // if .\\log\\ not exist, create it use windows
+    if (_access(".\\log\\", 0) == -1) {
+        std::cout << "[Debug] log dir not exist, create it" << std::endl;
+        _mkdir(".\\log\\");
+    }
+
     logFile = ".\\log\\" + hostname + "_" + std::to_string(time(nullptr)) + ".log";
     std::cout << "[Debug] logFile: " << logFile << std::endl;
     logStream.open(logFile);
@@ -70,7 +75,7 @@ void Debug::logAR(DataLinkLayer* dll, int pdu_recv, std::string status) {
         return;
 
     logStream << "[DataLinkLayer] RX\t"
-              << dll->recvCount++ << ", pdu_exp=" << int(dll->frame_expected) << ", pdu_recv=" << pdu_recv << ", status=" << status << std::endl;
+              << dll->recvCount << ", pdu_exp=" << int(dll->frame_expected) << ", pdu_recv=" << pdu_recv << ", status=" << status << std::endl;
     logStream.flush();
 }
 

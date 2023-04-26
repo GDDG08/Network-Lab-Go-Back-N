@@ -18,6 +18,12 @@ NetworkLayer::NetworkLayer(Config::ConfigBean cfg) {
 }
 
 void NetworkLayer::init() {
+    // if cfg.savePath not exist, create it
+    if (_access(cfg.savePath.c_str(), 0) == -1) {
+        std::cout << "[NetworkLayer] create savePath " << cfg.savePath << std::endl;
+        _mkdir(cfg.savePath.c_str());
+    }
+
     isRunning = true;
     packetHandler = std::thread([this]() {
         while (isRunning) {
@@ -36,7 +42,7 @@ NetworkLayer::~NetworkLayer() {
     delete dataLinkLayer;
     delete packetQueue;
 }
-void NetworkLayer::onDataLinkLayerRx( RecvData data) {
+void NetworkLayer::onDataLinkLayerRx(RecvData data) {
     std::cout << "[NetworkLayer] onDataLinkLayerRx " << std::endl;
     // Packet packet(data.buff);
     // PhyAddrPort ap = data.ap;

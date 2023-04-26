@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\dataLinkLayer.hpp
+ * @FilePath     : \Code\network\dataLinkLayer.hpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-23 16:06:33
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:02:35
+ * @LastEditTime : 2023-04-27 01:34:36
  */
 #ifndef DATALINKLAYER_HPP
 #define DATALINKLAYER_HPP
@@ -25,7 +25,6 @@ typedef struct {
     Frame::Header header;
     std::string packet;
     PhyAddrPort ap;
-    int packetNo;
 } GBN_EVENT;
 
 typedef BlockingQueue<GBN_EVENT> GBNEventQueue;
@@ -67,7 +66,6 @@ class DataLinkLayer {
     // Debug
     int sendCount = 1;
     int recvCount = 1;
-    int packetCount = 1;
 
     inline bool between(uint8_t a, uint8_t b, uint8_t c);
     inline int inc(uint8_t& num);

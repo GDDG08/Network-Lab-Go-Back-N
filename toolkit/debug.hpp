@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\toolkit\debug.hpp
+ * @FilePath     : \Code\toolkit\debug.hpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-22 16:40:37
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:08:46
+ * @LastEditTime : 2023-04-27 01:48:12
  */
 #ifndef DEBUG_HPP
 #define DEBUG_HPP
@@ -15,6 +15,8 @@
 #include <sstream>
 #include <fstream>
 #include <iomanip>
+#include <io.h>
+#include <direct.h>
 #include "..\network\DataStruct.hpp"
 
 class PhysicalLayer;
