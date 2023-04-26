@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 22:56:56
+ * @LastEditTime : 2023-04-24 11:58:54
  */
 
 #include <iostream>
@@ -57,8 +57,8 @@ int main() {
     //     pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"});
     // }
 
-    // DataLinkLayer dll(cfg);
-    // dll.init();
+    DataLinkLayer dll(cfg);
+    dll.init();
 
     // dll.test_timer();
     // use two threads ad producer and consumer to test BlockingQueue
@@ -94,8 +94,8 @@ int main() {
     // uint16_t len2 = (buff[0] << 8) | buff[1];
     // cout << int2hex(len2) << endl;
 
-    NetworkLayer nl(cfg);
-    nl.init();
+    // NetworkLayer nl(cfg);
+    // nl.init();
     while (true) {
         // pause in cmd
         cout << "Press any key to continue..." << endl;
@@ -103,6 +103,11 @@ int main() {
 
         // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
         // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-        nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
+        // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
+
+        // test ack piggyback
+
+        // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+        dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
     }
 }

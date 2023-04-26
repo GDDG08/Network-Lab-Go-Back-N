@@ -52,6 +52,7 @@ class DataLinkLayer {
     mutex mtx_timer;
 
     bool isACKsent = true;
+    Timer *ackTime;
     // mutex mtx_ack;
 
     inline bool between(uint8_t a, uint8_t b, uint8_t c);
@@ -75,6 +76,8 @@ class DataLinkLayer {
     void init();
     static void onPhysicalLayerRx(void * queuePtr,RecvData data);
     void onNetworkLayerTx(PhyAddrPort ap, std::string packet);
+
+    void testDLL(PhyAddrPort ap);
 };
 
 #endif  // DATALINKLAYER_HPP

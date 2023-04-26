@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++.exe",
+            "name": "Debug GBN_Network1",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}\\bin\\GBN_Network1.exe",
@@ -13,7 +13,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}\\bin",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "MIMode": "gdb",
             "miDebuggerPath": "gdb.exe",
             "setupCommands": [
@@ -23,7 +23,96 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "runTerminal2",
+            // "preLaunchTask": "makeRun",
+            "presentation": {
+                "hidden": false,
+                "group": "Parallel",
+                "order": 1
+            }
+        },
+        {
+            "name": "Debug GBN_Network2",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\bin\\GBN_Network2.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}\\bin",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            // "preLaunchTask": "makeRun",
+            "presentation": {
+                "hidden": false,
+                "group": "Parallel",
+                "order": 2
+            }
+        },
+        // {
+        //     "name": "Debug GBN_Network1 without compile",
+        //     "type": "cppdbg",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}\\bin\\GBN_Network1.exe",
+        //     "args": [],
+        //     "stopAtEntry": false,
+        //     "cwd": "${workspaceFolder}\\bin",
+        //     "environment": [],
+        //     "externalConsole": false,
+        //     "MIMode": "gdb",
+        //     "miDebuggerPath": "gdb.exe",
+        //     "setupCommands": [
+        //         {
+        //             "description": "为 gdb 启用整齐打印",
+        //             "text": "-enable-pretty-printing",
+        //             "ignoreFailures": true
+        //         }
+        //     ],
+        //     "presentation": {
+        //         "hidden": false,
+        //         "group": "Parallel-noCompile",
+        //         "order": 1
+        //     }
+        // },
+        // {
+        //     "name": "Debug GBN_Network2 without compile",
+        //     "type": "cppdbg",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}\\bin\\GBN_Network2.exe",
+        //     "args": [],
+        //     "stopAtEntry": false,
+        //     "cwd": "${workspaceFolder}\\bin",
+        //     "environment": [],
+        //     "externalConsole": false,
+        //     "MIMode": "gdb",
+        //     "miDebuggerPath": "gdb.exe",
+        //     "setupCommands": [
+        //         {
+        //             "description": "为 gdb 启用整齐打印",
+        //             "text": "-enable-pretty-printing",
+        //             "ignoreFailures": true
+        //         }
+        //     ],
+        //     "presentation": {
+        //         "hidden": false,
+        //         "group": "Parallel-noCompile",
+        //         "order": 2
+        //     }
+        // }
+    ],
+    "compounds": [
+        {
+          "name": "Debug Both GBN_Networks",
+          "configurations": ["Debug GBN_Network1", "Debug GBN_Network2"],
+          "preLaunchTask": "makeRun",
+          "stopAll": true
         }
-    ]
+      ]
 }

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 16:22:13
+ * @LastEditTime : 2023-04-24 12:03:01
  */
 #include "dataLinkLayer.hpp"
 
@@ -24,7 +24,6 @@ DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, void* nlPtr, void (*callbac
 }
 
 void DataLinkLayer::init() {
-
     ack_expected = 0;       /* next ack_expected inbound */
     next_frame_to_send = 0; /* next frame going out */
     frame_expected = 0;     /* number of frame_expected inbound */
@@ -85,20 +84,20 @@ int DataLinkLayer::sendData(PhyAddrPort ap, std::string packet) {
 }
 // @Todo: piggyback ack
 int DataLinkLayer::sendACK(PhyAddrPort ap) {
-    return 2;
+    // return 2;
     if (!isACKsent)
         return 1;
     isACKsent = false;
-    // Timer ackTime([ap, this]() {
-    //     if (this->isACKsent) {
-    //         return;
-    //     }
-    Frame s(FRAME_TYPE::ACK, 0, this->frame_expected, "");
-    physicalLayer->sendData(s.to_buff_all(), ap);
-    isACKsent = true;
-    // },
-    //               TIMEOUT / 100);
-    // ackTime.start();
+    ackTime = new Timer([ap, this]() {
+        if (this->isACKsent) {
+            return;
+        }
+        Frame s(FRAME_TYPE::ACK, 0, this->frame_expected, "");
+        physicalLayer->sendData(s.to_buff_all(), ap);
+        isACKsent = true;
+    },
+                        TIMEOUT);
+    ackTime->start();
     return 0;
 }
 int DataLinkLayer::sendNAK(PhyAddrPort ap, uint8_t seq) {
@@ -226,7 +225,9 @@ void DataLinkLayer::disable_network_layer() {
 
 void DataLinkLayer::to_network_layer(PhyAddrPort ap, std::string packet) {
     // std::cout << "[DataLinkLayer] to network layer" << std::endl;
-    callbackFunc(networkLayerPtr, RecvData(ap, packet));
+    if (callbackFunc != nullptr && networkLayerPtr != nullptr) {
+        callbackFunc(networkLayerPtr, RecvData(ap, packet));
+    }
 }
 
 void DataLinkLayer::onPhysicalLayerRx(void* classPtr, RecvData data) {
@@ -260,4 +261,8 @@ void DataLinkLayer::onNetworkLayerTx(PhyAddrPort ap, std::string packet) {
                      Frame::Header(),
                      packet,
                      ap});
+}
+
+void DataLinkLayer::testDLL(PhyAddrPort ap) {
+    sendACK(ap);
 }

@@ -2,7 +2,7 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "recoompileBAT",
+            "label": "recompileBAT",
             "command": [
                 "start recompile.bat"
             ],
@@ -25,7 +25,7 @@
                 "cwd": "${workspaceFolder}/build"
             },
             "dependsOn": [
-                "recoompileBAT"
+                "recompileBAT"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -43,7 +43,12 @@
             },
             "dependsOn": [
                 "cmakeRun"
-            ]
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
             "type": "shell",
@@ -59,10 +64,7 @@
                 "makeRun"
             ],
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
+            "group": "build"
         }
     ],
     "version": "2.0.0"
