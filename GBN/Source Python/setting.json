@@ -1,8 +1,0 @@
-{
-    "data_size": 2048,
-    "error_rate": 30,
-    "lost_rate": 30,
-    "SW_size": 16,
-    "init_seq_no": 0,
-    "time_out": 200
-}
