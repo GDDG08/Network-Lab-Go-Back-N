@@ -23,17 +23,7 @@ using namespace std;
 #define HOST_ID "null"
 #endif
 
-#include "toolkit\testClassA.hpp"
 int main() {
-    TestClassA a;
-    // a.callA();
-    a.callB();
-
-    // TestClassB b;
-    // b.callA();
-    // b.callB();
-
-    return 0;
 
     printf("[TestTerminal] ID-> " HOST_ID "\n");
 
