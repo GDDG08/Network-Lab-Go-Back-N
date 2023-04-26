@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-24 11:58:54
+ * @LastEditTime : 2023-04-26 15:47:10
  */
 
 #include <iostream>
@@ -23,7 +23,18 @@ using namespace std;
 #define HOST_ID "null"
 #endif
 
+#include "toolkit\testClassA.hpp"
 int main() {
+    TestClassA a;
+    // a.callA();
+    a.callB();
+
+    // TestClassB b;
+    // b.callA();
+    // b.callB();
+
+    return 0;
+
     printf("[TestTerminal] ID-> " HOST_ID "\n");
 
     Config config("config_host_" HOST_ID ".json");
