@@ -1,30 +1,29 @@
 /*
  * @Project      :
- * @FilePath     : \Code\testTerminal.cpp
+ * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\testTerminal.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 15:47:10
+ * @LastEditTime : 2023-04-26 17:19:40
  */
 
 #include <iostream>
 #include <string>
 using namespace std;
 
-#include "network\physicalLayer.hpp"
-#include "network\dataLinkLayer.hpp"
-#include "network\networkLayer.hpp"
 #include "toolkit\config.hpp"
 #include "toolkit\checkCRC.hpp"
 #include "toolkit\debug.hpp"
+#include "network\physicalLayer.hpp"
+#include "network\dataLinkLayer.hpp"
+#include "network\networkLayer.hpp"
 
 #ifndef HOST_ID
 #define HOST_ID "null"
 #endif
 
 int main() {
-
     printf("[TestTerminal] ID-> " HOST_ID "\n");
 
     Config config("config_host_" HOST_ID ".json");

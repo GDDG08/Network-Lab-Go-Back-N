@@ -5,10 +5,11 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:59:13
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-24 00:15:46
+ * @LastEditTime : 2023-04-26 17:09:59
  */
 
 #include "networkLayer.hpp"
+#include "dataLinkLayer.hpp"
 
 NetworkLayer::NetworkLayer(Config::ConfigBean cfg) {
     this->cfg = cfg;

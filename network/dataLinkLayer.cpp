@@ -8,6 +8,7 @@
  * @LastEditTime : 2023-04-24 12:03:01
  */
 #include "dataLinkLayer.hpp"
+#include "physicalLayer.hpp"
 
 DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, void* nlPtr, void (*callback)(void*, RecvData)) {
     physicalLayer = new PhysicalLayer(cfg);

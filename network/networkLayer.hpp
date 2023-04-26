@@ -5,16 +5,23 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 12:33:33
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 22:53:24
+ * @LastEditTime : 2023-04-26 17:15:05
  */
 
 #ifndef NETWORKLAYER_HPP
 #define NETWORKLAYER_HPP
 
-#include "dataLinkLayer.hpp"
-#include "Packet.hpp"
 #include <iostream>
+#include <thread>
 #include <sys/stat.h>
+#include "..\toolkit\msgQueue.hpp"
+#include "..\toolkit\config.hpp"
+#include "Packet.hpp"
+#include "DataStruct.hpp"
+
+
+class DataLinkLayer;
+class RecvData;
 
 typedef BlockingQueue<RecvData> PacketQueue;
 
