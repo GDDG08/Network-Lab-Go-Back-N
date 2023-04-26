@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\dataLinkLayer.hpp
+ * @FilePath     : \Code\network\dataLinkLayer.hpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-23 16:06:33
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:01:03
+ * @LastEditTime : 2023-04-26 17:22:50
  */
 #ifndef DATALINKLAYER_HPP
 #define DATALINKLAYER_HPP
@@ -16,8 +16,8 @@
 #include "Frame.hpp"
 #include "DataStruct.hpp"
 
-
 class PhysicalLayer;
+class NetworkLayer;
 
 #define MAX_SEQ 7
 typedef enum { FRAME_ARRIVAL,
@@ -36,8 +36,7 @@ typedef BlockingQueue<GBN_EVENT> GBNEventQueue;
 
 class DataLinkLayer {
    private:
-    void (*callbackFunc)(void*, RecvData) = nullptr;
-    void* networkLayerPtr = nullptr;
+    NetworkLayer* networkLayerPtr = nullptr;
     PhysicalLayer* physicalLayer;
     std::thread eventHandler;
     bool isRunning = false;
@@ -84,10 +83,10 @@ class DataLinkLayer {
     void handleEvents();
 
    public:
-    DataLinkLayer(Config::ConfigBean cfg, void* nlPtr = nullptr, void (*callback)(void*, RecvData) = nullptr);
+    DataLinkLayer(Config::ConfigBean cfg, NetworkLayer* nlPtr = nullptr);
     ~DataLinkLayer();
     void init();
-    static void onPhysicalLayerRx(void* queuePtr, RecvData data);
+    void onPhysicalLayerRx(RecvData data);
     void onNetworkLayerTx(PhyAddrPort ap, std::string packet);
 
     void testDLL(PhyAddrPort ap);

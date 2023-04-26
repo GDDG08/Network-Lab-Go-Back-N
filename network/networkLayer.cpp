@@ -13,7 +13,7 @@
 
 NetworkLayer::NetworkLayer(Config::ConfigBean cfg) {
     this->cfg = cfg;
-    dataLinkLayer = new DataLinkLayer(cfg, this, onDataLinkLayerRx);
+    dataLinkLayer = new DataLinkLayer(cfg, this);
     packetQueue = new PacketQueue();
 }
 
@@ -36,14 +36,13 @@ NetworkLayer::~NetworkLayer() {
     delete dataLinkLayer;
     delete packetQueue;
 }
-void NetworkLayer::onDataLinkLayerRx(void* nlPtr, RecvData data) {
+void NetworkLayer::onDataLinkLayerRx( RecvData data) {
     std::cout << "[NetworkLayer] onDataLinkLayerRx " << std::endl;
-    NetworkLayer* nl = (NetworkLayer*)nlPtr;
     // Packet packet(data.buff);
     // PhyAddrPort ap = data.ap;
     // packet.print();
 
-    nl->packetQueue->put(data);
+    packetQueue->put(data);
 }
 
 int NetworkLayer::sendHello(PhyAddrPort ap) {

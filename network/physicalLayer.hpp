@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 15:13:27
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:18:47
+ * @LastEditTime : 2023-04-26 17:22:14
  */
 #ifndef PHYSICALLAYER_HPP
 #define PHYSICALLAYER_HPP
@@ -22,6 +22,8 @@
 
 // #pragma comment(lib, "ws2_32.lib")
 
+class DataLinkLayer;
+
 class PhysicalLayer {
    private:
     const static int BUFF_LEN = 1024;
@@ -36,7 +38,7 @@ class PhysicalLayer {
     int init();
     int sendData(std::string info, PhyAddrPort ap);
     RecvData recvData();
-    int startRecvTask(void* queuePtr = nullptr, void (*callback)(void*, RecvData) = nullptr);
+    int startRecvTask(DataLinkLayer* queuePtr = nullptr);
     int stopRecvTask();
     ~PhysicalLayer();
 };

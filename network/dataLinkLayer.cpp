@@ -1,20 +1,20 @@
 /*
  * @Project      :
- * @FilePath     : \Code\network\dataLinkLayer.cpp
+ * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\dataLinkLayer.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-24 12:03:01
+ * @LastEditTime : 2023-04-26 17:25:53
  */
 #include "dataLinkLayer.hpp"
 #include "physicalLayer.hpp"
+#include "networkLayer.hpp"
 
-DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, void* nlPtr, void (*callback)(void*, RecvData)) {
+DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, NetworkLayer* nlPtr) {
     physicalLayer = new PhysicalLayer(cfg);
     eventQueue = new GBNEventQueue();
     networkLayerPtr = nlPtr;
-    callbackFunc = callback;
 
     DATA_SIZE = cfg.dataSize;
     SW_SIZE = cfg.swSize;
@@ -43,7 +43,7 @@ void DataLinkLayer::init() {
     });
 
     physicalLayer->init();
-    physicalLayer->startRecvTask(this, onPhysicalLayerRx);
+    physicalLayer->startRecvTask(this);
     // physicalLayer->startRecvTask();
     enable_network_layer(); /* allow network layer ready events */
 }
@@ -226,16 +226,15 @@ void DataLinkLayer::disable_network_layer() {
 
 void DataLinkLayer::to_network_layer(PhyAddrPort ap, std::string packet) {
     // std::cout << "[DataLinkLayer] to network layer" << std::endl;
-    if (callbackFunc != nullptr && networkLayerPtr != nullptr) {
-        callbackFunc(networkLayerPtr, RecvData(ap, packet));
+    if (networkLayerPtr != nullptr) {
+        networkLayerPtr->onDataLinkLayerRx(RecvData(ap, packet));
     }
 }
 
-void DataLinkLayer::onPhysicalLayerRx(void* classPtr, RecvData data) {
-    DataLinkLayer* class_ = (DataLinkLayer*)classPtr;
+void DataLinkLayer::onPhysicalLayerRx(RecvData data) {
     Frame frame(data.buff);
     if (frame.verify()) {
-        class_->eventQueue->put({
+        eventQueue->put({
             GBN_EVENT_TYPE::FRAME_ARRIVAL,
             frame.header,
             frame.info,
@@ -243,7 +242,7 @@ void DataLinkLayer::onPhysicalLayerRx(void* classPtr, RecvData data) {
         });
     } else {
         // @Todo:如果ack有问题咋办
-        class_->eventQueue->put({
+        eventQueue->put({
             GBN_EVENT_TYPE::CKSUM_ERR,
             frame.header,
             frame.info,

@@ -5,10 +5,10 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-23 13:31:02
+ * @LastEditTime : 2023-04-26 17:21:16
  */
 #include "physicalLayer.hpp"
-
+#include "dataLinkLayer.hpp"
 
 // UDP socket on windows to send and receive data
 
@@ -101,16 +101,16 @@ RecvData PhysicalLayer::recvData() {
     return rd;
 }
 
-int PhysicalLayer::startRecvTask(void* dllPtr, void (*callback)(void*, RecvData)) {
-    std::thread recvTask([this, callback, dllPtr] {
+int PhysicalLayer::startRecvTask(DataLinkLayer* dllPtr) {
+    std::thread recvTask([this, dllPtr] {
         while (this->onRecvTask) {
             RecvData data = this->recvData();
             std::cout << "[PhysicalLayer][RecvTask] onRecv!" << std::endl;
             // msg.push_one((pi){"recv_data", tmpp});
             // if (data.buff[0] == '\0')
             //     continue;
-            if (dllPtr != nullptr && callback != nullptr) {
-                callback(dllPtr, data);
+            if (dllPtr != nullptr) {
+                dllPtr->onPhysicalLayerRx(data);
             }
         }
     });

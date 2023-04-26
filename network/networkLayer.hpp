@@ -51,7 +51,7 @@ class NetworkLayer {
     ~NetworkLayer();
     int sendFile(PhyAddrPort ap, std::string path);
     int sendHello(PhyAddrPort ap);
-    static void onDataLinkLayerRx(void*, RecvData data);
+    void onDataLinkLayerRx(RecvData data);
 
     void init();
 };
