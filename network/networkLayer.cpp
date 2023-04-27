@@ -76,6 +76,7 @@ int NetworkLayer::sendFile(PhyAddrPort ap, std::string path) {
     }
 
     std::cout << "[NetworkLayer] sendFile " << fileName << " size " << fileSize << std::endl;
+    Debug::logD(this, "send file to " + ap.addr + ":" + std::to_string(ap.port) + " of " + fileName + " size " + std::to_string(fileSize) + " Bytes");
 
     // send file request
     FileRequestInfo fInfo(FileID++, fileSize, fileName);
@@ -130,7 +131,7 @@ void NetworkLayer::handlePackets() {
         case PACKET_TYPE::FILE_RQT: {
             std::cout << "[NetworkLayer] recv file rqt from " << ap.addr << ":" << ap.port << std::endl;
             FileRequestInfo info(packet.info);
-            Debug::logD(this, "recv file RQT from " + ap.addr + ":" + std::to_string(ap.port) + " of ["+std::to_string(info.fileID)+"]" + info.filename + "(" + std::to_string(info.fileSize) + " Bytes)");
+            Debug::logD(this, "recv file RQT from " + ap.addr + ":" + std::to_string(ap.port) + " of [" + std::to_string(info.fileID) + "]" + info.filename + "(" + std::to_string(info.fileSize) + " Bytes)");
             filesMap.insert({info.fileID,
                              FileInfo{info.fileID, info.fileSize, info.filename, ap}});
             // if file exits then delete it
@@ -158,7 +159,7 @@ void NetworkLayer::handlePackets() {
             std::cout << "[NetworkLayer] recv file finish from " << ap.addr << ":" << ap.port << std::endl;
 
             FileFinishInfo info(packet.info);
-            Debug::logD(this, "recv file ["+std::to_string(info.fileID)+"]"+filesMap[info.fileID].filename + " finished!");
+            Debug::logD(this, "recv file [" + std::to_string(info.fileID) + "]" + filesMap[info.fileID].filename + " finished!");
             // delete filesMap[fileID] from map
             // auto index = filesMap.find(info.fileID);
             filesMap.erase(info.fileID);
