@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-28 00:44:04
+ * @LastEditTime : 2023-04-28 02:53:50
  */
 #include "dataLinkLayer.hpp"
 #include "physicalLayer.hpp"
@@ -74,6 +74,8 @@ inline int DataLinkLayer::inc(uint8_t& num) {
 }
 
 int DataLinkLayer::sendData(PhyAddrPort ap, std::string packet) {
+    std::unique_lock<std::mutex> lock(mtx_ack);
+
     /* Construct and send a data frame. */
     Frame s(
         FRAME_TYPE::DATA,   /* type == data */
@@ -83,7 +85,7 @@ int DataLinkLayer::sendData(PhyAddrPort ap, std::string packet) {
     );
     physicalLayer->sendData(s.to_buff_all(), ap, ON_DEBUG); /* transmit the frame */
     if (!isACKsent) {
-        Debug::logD(this, "TX \t ACK " + std::to_string(this->frame_expected) + " [piggyback]");
+        Debug::logD(this, "TX\tACK " + std::to_string(this->frame_expected) + " [piggyback]");
         isACKsent = true;
     }
     start_timer(next_frame_to_send); /* start the timer running */
@@ -97,11 +99,12 @@ int DataLinkLayer::sendACK(PhyAddrPort ap) {
         return 1;
     isACKsent = false;
     ackTime = new Timer([ap, this]() {
+        std::unique_lock<std::mutex> lock(mtx_ack);
         if (this->isACKsent) {
-            std::cout << "[DataLinkLayer][INFO] ACK already sent, abort" << endl;
+            // std::cout << "[DataLinkLayer][INFO] ACK already sent, abort" << endl;
             return;
         }
-        Debug::logD(this, "TX \t ACK " + std::to_string(this->frame_expected));
+        Debug::logD(this, "TX\tACK " + std::to_string(this->frame_expected));
         Frame s(FRAME_TYPE::ACK, 0, this->frame_expected, "");
         physicalLayer->sendData(s.to_buff_all(), ap);
         isACKsent = true;
@@ -112,6 +115,8 @@ int DataLinkLayer::sendACK(PhyAddrPort ap) {
 }
 int DataLinkLayer::sendNAK(PhyAddrPort ap, uint8_t seq) {
     Frame s(FRAME_TYPE::NAK, 0, seq, "");
+    Debug::logD(this, "TX\tNAK " + std::to_string(seq));
+
     physicalLayer->sendData(s.to_buff_all(), ap);
     return 0;
 }
@@ -177,15 +182,17 @@ void DataLinkLayer::handleEvents() {
 
                         update_state_network_layer();
                         networklayer_ready.notify_one();
-                        
                     }
                     break;
                 case FRAME_TYPE::NAK:
-                    std::cout << "[DataLinkLayer][INFO] header.type NAK go back to " << int(header.ack) << std::endl;
+                    // std::cout << "[DataLinkLayer][INFO] header.type NAK go back to " << int(header.ack) << std::endl;
 
-                    /* Sender will receive frame_expected − 1 next time. */
-                    next_frame_to_send = header.ack;          /* start retransmitting here */
-                    reSendAllData(GBN_EVENT_TYPE::CKSUM_ERR); /* resend buffered frames */
+                    // /* Sender will receive frame_expected − 1 next time. */
+                    // // next_frame_to_send = header.ack;          /* start retransmitting here */
+                    // stop_timer_all();                         /* cancel all timers */
+                    // reSendAllData(GBN_EVENT_TYPE::CKSUM_ERR); /* resend buffered frames */
+                    // this->onTimeout = false;
+
                     break;
                 default:
                     std::cout << "[DataLinkLayer][ERROR] Unexpected frame type" << std::endl;
@@ -200,14 +207,15 @@ void DataLinkLayer::handleEvents() {
             break;
         case GBN_EVENT_TYPE::TIMEOUT: /* trouble; retransmit all outstanding frames */
             std::cout << "[DataLinkLayer][TIMEOUT] go back to " << int(ack_expected) << std::endl;
-            // disbale all timers
-            for (size_t i = 0; i < MAX_SEQ + 1; i++) {
-                stop_timer(i);
-            }
+
+            stop_timer_all();                       /* cancel all timers */
             next_frame_to_send = ack_expected;      /* start retransmitting here */
             reSendAllData(GBN_EVENT_TYPE::TIMEOUT); /* resend buffered frames */
             this->onTimeout = false;
     }
+    // std::cout << "BUGGGGGG nqueued=" << std::to_string(nqueued) << " nbuffered=" << std::to_string(nbuffered) << std::endl;
+    // if (nbuffered > 200)
+    //     exit(0);
 }
 
 void DataLinkLayer::init_timer() {
@@ -239,6 +247,12 @@ void DataLinkLayer::init_timer() {
 void DataLinkLayer::stop_timer(uint8_t frame_num) {
     timerList[frame_num]->stop();
 }
+void DataLinkLayer::stop_timer_all() {
+    // disbale all timers
+    for (size_t i = 0; i < MAX_SEQ + 1; i++) {
+        stop_timer(i);
+    }
+}
 
 void DataLinkLayer::start_timer(uint8_t frame_num) {
     stop_timer(frame_num);
@@ -246,12 +260,12 @@ void DataLinkLayer::start_timer(uint8_t frame_num) {
 }
 
 void DataLinkLayer::enable_network_layer() {
-    std::cout << "[DataLinkLayer] enable network layer" << std::endl;
+    // std::cout << "[DataLinkLayer] enable network layer" << std::endl;
     isNetworkLayerEnabled = true;
 }
 
 void DataLinkLayer::disable_network_layer() {
-    std::cout << "[DataLinkLayer] disable network layer" << std::endl;
+    // std::cout << "[DataLinkLayer] disable network layer" << std::endl;
     isNetworkLayerEnabled = false;
 }
 
@@ -312,7 +326,7 @@ void DataLinkLayer::onNetworkLayerTx(PhyAddrPort ap, std::string packet) {
                      ap});
     nqueued++;
     update_state_network_layer();
-    std::cout << "[DataLinkLayer] onNetworkLayerTx put one with nqueued as " << int(nqueued) << std::endl;
+    // std::cout << "[DataLinkLayer] onNetworkLayerTx put one with nqueued as " << int(nqueued) << std::endl;
 }
 
 void DataLinkLayer::testDLL(PhyAddrPort ap) {

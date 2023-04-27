@@ -64,7 +64,7 @@ class DataLinkLayer {
 
     bool isACKsent = true;
     Timer* ackTime;
-    // mutex mtx_ack;
+    mutex mtx_ack;
 
     // Debug
     int sendCount = 1;
@@ -75,6 +75,7 @@ class DataLinkLayer {
     void init_timer();
     void start_timer(uint8_t seq);
     void stop_timer(uint8_t seq);
+    void stop_timer_all();
 
     void enable_network_layer();
     void disable_network_layer();

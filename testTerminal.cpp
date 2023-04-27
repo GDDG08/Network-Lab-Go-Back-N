@@ -34,10 +34,10 @@ int main() {
     std::string ADDR_TEST = "127.0.0.1";
     if (cfg.udpPort == 12345) {
         PORT_TEST = 12346;
-        ADDR_TEST = "192.168.37.250";
+        // ADDR_TEST = "192.168.37.250";
     } else {
         PORT_TEST = 12345;
-        ADDR_TEST = "192.168.37.100";
+        // ADDR_TEST = "192.168.37.100";
     }
 
     Debug::init("GBN_" HOST_ID);
@@ -151,5 +151,8 @@ int main() {
 
         // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
         // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+
+
+        // Todo：nbuffer诈尸事件，ACK不死事件
     }
 }

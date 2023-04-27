@@ -4,8 +4,8 @@
     "ErrorRate": 0,
     "LostRate": 0,
     "OnDebug": true,
-    "SWSize": 15,
+    "SWSize": 7,
     "InitSeqNo": 0,
-    "Timeout": 1000,
+    "Timeout": 200,
     "SavePath": ".\\recv2\\"
 }
