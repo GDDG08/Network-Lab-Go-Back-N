@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\testTerminal.cpp
+ * @FilePath     : \Code\testTerminal.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:07:38
+ * @LastEditTime : 2023-04-27 16:10:06
  */
 
 #include <iostream>
@@ -38,6 +38,7 @@ int main() {
     }
 
     Debug::init("GBN_" HOST_ID);
+
     // PhysicalLayer pl(cfg);
     // pl.init();
 
@@ -50,16 +51,39 @@ int main() {
 
     // cout << "Buff " << Debug::str2hex(tf.to_buff_all()) << endl;
 
-    // while (true) {
-    //     // pause in cmd
-    //     cout << "Press any key to continue..." << endl;
-    //     getchar();
+    // cout << "Press any key to continue..." << endl;
+    // getchar();
 
-    //     pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"});
-    // }
+    DataLinkLayer dll(cfg);
+    dll.init();
 
-    // DataLinkLayer dll(cfg);
-    // dll.init();
+    while (true) {
+        //     // pause in cmd
+        cout << "Press any key to continue..." << endl;
+        getchar();
+
+        // pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"}, true);
+        dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
+    }
+
+    // std::thread test1([&pl, PORT_TEST]() {
+    //     while (true) {
+    //         pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"});
+    //     }
+    // });
+    // std::thread test2([&pl, PORT_TEST]() {
+    //     while (true) {
+    //         pl.sendData("AABBCC", {PORT_TEST, "127.0.0.1"});
+    //     }
+    // });
+
+    // cout << "Press any key to continue..." << endl;
+    // getchar();
+
+    // test1.detach();
+    // test2.detach();
+
+
 
     // dll.test_timer();
     // use two threads ad producer and consumer to test BlockingQueue
@@ -95,20 +119,20 @@ int main() {
     // uint16_t len2 = (buff[0] << 8) | buff[1];
     // cout << Debug::int2hex(len2) << endl;
 
-    NetworkLayer nl(cfg);
-    nl.init();
-    while (true) {
-        // pause in cmd
-        cout << "Press any key to continue..." << endl;
-        getchar();
+    // NetworkLayer nl(cfg);
+    // nl.init();
+    // while (true) {
+    //     // pause in cmd
+    //     cout << "Press any key to continue..." << endl;
+    //     getchar();
 
-        // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-        // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
+    //     // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+    //     nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+    //     // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
 
-        // test ack piggyback
+    //     // test ack piggyback
 
-        // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-    }
+    //     // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+    //     // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+    // }
 }

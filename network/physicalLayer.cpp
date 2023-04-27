@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:10:38
+ * @LastEditTime : 2023-04-27 16:09:40
  */
 #include "physicalLayer.hpp"
 #include "dataLinkLayer.hpp"
@@ -14,6 +14,9 @@
 
 PhysicalLayer::PhysicalLayer(Config::ConfigBean cfg) {
     this->listen_port = cfg.udpPort;
+
+    ERROR_RATE = cfg.errorRate;
+    LOST_RATE = cfg.lostRate;
 }
 
 int PhysicalLayer::init() {
@@ -48,7 +51,7 @@ int PhysicalLayer::init() {
     return 0;
 }
 
-int PhysicalLayer::sendData(std::string info, PhyAddrPort ap) {
+int PhysicalLayer::sendData(std::string info, PhyAddrPort ap, bool isDebug) {
     // Set up the address and port to send data to
     sockaddr_in dstAddr;
     dstAddr.sin_family = AF_INET;
@@ -57,6 +60,33 @@ int PhysicalLayer::sendData(std::string info, PhyAddrPort ap) {
 
     // Send data
     const char* sendData = info.data();
+
+    if (isDebug) {
+        // set seed for round
+        // srand((unsigned)time(NULL));
+        std::random_device rd;   // 如果可用的话，从一个随机数发生器上获得一个真正的随机数
+        std::mt19937 gen(rd());  // gen是一个使用rd()作种子初始化的标准梅森旋转算法的随机数发生器
+        std::uniform_int_distribution<> distribP(0, 100);
+        // for the posibility of ERROR_RATE
+        int random = distribP(gen);
+        // std::cout << "[PhysicalLayer] TX Debug random: " << random << std::endl;
+        // return 1;
+        if (random < LOST_RATE) {
+            std::cout << "[PhysicalLayer] TX Debug Lost" << std::endl;
+            Debug::logD(this, "TX Debug Lost");
+            return 0;
+        }
+        random = distribP(gen);
+        if (random < ERROR_RATE) {
+            std::uniform_int_distribution<> distribL(0, info.length() - 1);
+            // round num in [0,info.length()-1]
+            int index = distribL(gen);
+            info[index] += 1;
+            std::cout << "[PhysicalLayer] TX Debug Error generated on byte " << index << std::endl;
+            Debug::logD(this, "TX Debug Error generated on byte " + std::to_string(index));
+        }
+    }
+
     int sendResult = sendto(sock, sendData, info.length(), 0, (sockaddr*)&dstAddr, sizeof(dstAddr));
     if (sendResult == SOCKET_ERROR) {
         std::cerr << "[PhysicalLayer][Error] sendto failed with error: " << WSAGetLastError() << std::endl;
@@ -67,6 +97,7 @@ int PhysicalLayer::sendData(std::string info, PhyAddrPort ap) {
     std::cout << "[PhysicalLayer] Sent data To "
               << inet_ntoa(dstAddr.sin_addr) << ":" << ntohs(dstAddr.sin_port) << "-->" << std::endl
               << Debug::str2hex(info) << std::endl;
+    // Debug::logD(this, "[PhysicalLayer] TX " + Debug::str2hex(info));
     return 0;
 }
 
@@ -97,6 +128,7 @@ RecvData PhysicalLayer::recvData() {
         << "[PhysicalLayer] Received data From "
         << ap.addr << ":" << ap.port << "-->" << std::endl
         << Debug::str2hex(rd.buff) << std::endl;
+    Debug::logD(this, "[PhysicalLayer] RX " + Debug::str2hex(rd.buff));
 
     return rd;
 }

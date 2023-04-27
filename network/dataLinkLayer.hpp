@@ -50,8 +50,6 @@ class DataLinkLayer {
     bool isNetworkLayerEnabled = false;
 
     int DATA_SIZE;
-    int ERROR_RATE;
-    int LOST_RATE;
     int SW_SIZE;
     int INIT_SEQ_NO;
     int TIMEOUT;

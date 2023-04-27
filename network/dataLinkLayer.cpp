@@ -19,8 +19,6 @@ DataLinkLayer::DataLinkLayer(Config::ConfigBean cfg, NetworkLayer* nlPtr) {
     DATA_SIZE = cfg.dataSize;
     SW_SIZE = cfg.swSize;
     TIMEOUT = cfg.timeout;
-    ERROR_RATE = cfg.errorRate;
-    LOST_RATE = cfg.lostRate;
     INIT_SEQ_NO = cfg.initSeqNo;
 }
 

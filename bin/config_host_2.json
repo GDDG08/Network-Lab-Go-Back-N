@@ -1,7 +1,7 @@
 {
     "UDPPort": 12346,
     "DataSize": 1024,
-    "ErrorRate": 0,
+    "ErrorRate": 100,
     "LostRate": 0,
     "SWSize": 16,
     "InitSeqNo": 0,

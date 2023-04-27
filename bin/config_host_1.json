@@ -2,7 +2,7 @@
     "UDPPort": 12345,
     "DataSize": 1024,
     "ErrorRate": 0,
-    "LostRate": 0,
+    "LostRate": 50,
     "SWSize": 16,
     "InitSeqNo": 0,
     "Timeout": 1000,

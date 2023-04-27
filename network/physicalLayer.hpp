@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 15:13:27
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:22:14
+ * @LastEditTime : 2023-04-27 14:07:05
  */
 #ifndef PHYSICALLAYER_HPP
 #define PHYSICALLAYER_HPP
@@ -16,6 +16,7 @@
 #include <thread>
 #include <winsock2.h>
 #include <functional>
+#include <random>
 #include "..\toolkit\config.hpp"
 #include "..\toolkit\debug.hpp"
 #include "DataStruct.hpp"
@@ -26,9 +27,13 @@ class DataLinkLayer;
 
 class PhysicalLayer {
     friend class Debug;
+
    private:
     const static int BUFF_LEN = 1024;
     int listen_port;
+    int ERROR_RATE;
+    int LOST_RATE;
+
     SOCKET sock;
     sockaddr_in recvAddr;
 
@@ -37,12 +42,11 @@ class PhysicalLayer {
    public:
     PhysicalLayer(Config::ConfigBean cfg);
     int init();
-    int sendData(std::string info, PhyAddrPort ap);
+    int sendData(std::string info, PhyAddrPort ap, bool isDebug = false);
     RecvData recvData();
     int startRecvTask(DataLinkLayer* queuePtr = nullptr);
     int stopRecvTask();
     ~PhysicalLayer();
-
 };
 
 #endif  // PHYSICALLAYER_HPP
