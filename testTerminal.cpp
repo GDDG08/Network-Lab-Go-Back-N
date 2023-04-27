@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 19:37:00
+ * @LastEditTime : 2023-04-27 23:14:21
  */
 
 #include <iostream>
@@ -54,22 +54,23 @@ int main() {
     // cout << "Press any key to continue..." << endl;
     // getchar();
 
-    DataLinkLayer dll(cfg);
-    dll.init();
+    // DataLinkLayer dll(cfg);
+    // dll.init();
 
     // cout << "Press any key to continue..." << endl;
+    // auto time =  std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    // cout << time << endl;
+    // while (true) {
+    //     //     // pause in cmd
+    //     // cout << "Press any key to continue..." << endl;
+    //     getchar();
+    //     for (int i = 0; i < 1000; i++) {
+    //         dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
+    //     }
 
-    while (true) {
-        //     // pause in cmd
-        // cout << "Press any key to continue..." << endl;
-        getchar();
-        for (int i = 0; i < 10; i++) {
-            dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
-        }
-
-        // pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"}, true);
-        // dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
-    }
+    //     // pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"}, true);
+    //     // dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
+    // }
 
     // std::thread test1([&pl, PORT_TEST]() {
     //     while (true) {
@@ -122,20 +123,20 @@ int main() {
     // uint16_t len2 = (buff[0] << 8) | buff[1];
     // cout << Debug::int2hex(len2) << endl;
 
-    // NetworkLayer nl(cfg);
-    // nl.init();
-    // while (true) {
-    //     // pause in cmd
-    //     cout << "Press any key to continue..." << endl;
-    //     getchar();
+    NetworkLayer nl(cfg);
+    nl.init();
+    while (true) {
+        // pause in cmd
+        cout << "Press any key to continue..." << endl;
+        getchar();
 
-    //     // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-    //     nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-    //     // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
+        // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+        // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+        nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
 
-    //     // test ack piggyback
+        // test ack piggyback
 
-    //     // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-    //     // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-    // }
+        // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+        // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+    }
 }

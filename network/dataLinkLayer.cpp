@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 19:38:06
+ * @LastEditTime : 2023-04-27 23:26:32
  */
 #include "dataLinkLayer.hpp"
 #include "physicalLayer.hpp"
@@ -41,7 +41,7 @@ void DataLinkLayer::init() {
             this->handleEvents();
 
             // debug
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     });
 
@@ -82,7 +82,10 @@ int DataLinkLayer::sendData(PhyAddrPort ap, std::string packet) {
         packet              /* insert packet into frame */
     );
     physicalLayer->sendData(s.to_buff_all(), ap, ON_DEBUG); /* transmit the frame */
-    isACKsent = true;
+    if (!isACKsent) {
+        Debug::logD(this, "TX \t ACK " + std::to_string(this->frame_expected) + " [piggyback]");
+        isACKsent = true;
+    }
     start_timer(next_frame_to_send); /* start the timer running */
     sendCount++;
     return 0;
@@ -98,6 +101,7 @@ int DataLinkLayer::sendACK(PhyAddrPort ap) {
             std::cout << "[DataLinkLayer][INFO] ACK already sent, abort" << endl;
             return;
         }
+        Debug::logD(this, "TX \t ACK " + std::to_string(this->frame_expected));
         Frame s(FRAME_TYPE::ACK, 0, this->frame_expected, "");
         physicalLayer->sendData(s.to_buff_all(), ap);
         isACKsent = true;
@@ -174,7 +178,7 @@ void DataLinkLayer::handleEvents() {
                     break;
                 case FRAME_TYPE::NAK:
                     std::cout << "[DataLinkLayer][INFO] header.type NAK go back to " << int(header.ack) << std::endl;
-                    
+
                     /* Sender will receive frame_expected − 1 next time. */
                     next_frame_to_send = header.ack;          /* start retransmitting here */
                     reSendAllData(GBN_EVENT_TYPE::CKSUM_ERR); /* resend buffered frames */
