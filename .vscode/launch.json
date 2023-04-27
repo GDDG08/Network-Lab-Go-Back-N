@@ -113,6 +113,12 @@
           "configurations": ["Debug GBN_Network1", "Debug GBN_Network2"],
           "preLaunchTask": "makeRun",
           "stopAll": true
-        }
+        },
+        {
+            "name": "Debug Both GBN_Networks without Compile",
+            "configurations": ["Debug GBN_Network1", "Debug GBN_Network2"],
+            "preLaunchTask": "",
+            "stopAll": true
+          }
       ]
 }

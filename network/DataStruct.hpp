@@ -13,7 +13,7 @@
 
 
 typedef struct {
-    int port = 0;
+    int port = -1;
     std::string addr = "255.255.255.255";
 } PhyAddrPort;
 
@@ -34,7 +34,6 @@ class RecvData {
 typedef enum { FRAME_ARRIVAL,
                CKSUM_ERR,
                TIMEOUT,
-               RESEND,
                NETWORK_LAYER_READY } GBN_EVENT_TYPE;
 
 

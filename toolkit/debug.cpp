@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 16:40:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:47:11
+ * @LastEditTime : 2023-04-27 18:15:57
  */
 #include "debug.hpp"
 
@@ -39,6 +39,7 @@ void Debug::logD(PhysicalLayer* pl, std::string msg) {
         return;
     logStream << "[PhysicalLayer] " << msg << std::endl;
     logStream.flush();
+    // std::cout << "[PhysicalLayer] " << msg << std::endl;
 }
 
 void Debug::logD(DataLinkLayer* dll, std::string msg) {
@@ -47,6 +48,7 @@ void Debug::logD(DataLinkLayer* dll, std::string msg) {
 
     logStream << "[DataLinkLayer] " << msg << std::endl;
     logStream.flush();
+    std::cout << "[DataLinkLayer] " << msg << std::endl;
 }
 
 void Debug::logAT(DataLinkLayer* dll, int pdu_to_send, GBN_EVENT_TYPE statusCode) {
@@ -61,13 +63,16 @@ void Debug::logAT(DataLinkLayer* dll, int pdu_to_send, GBN_EVENT_TYPE statusCode
         case GBN_EVENT_TYPE::TIMEOUT:
             status = "TO";
             break;
-        case GBN_EVENT_TYPE::RESEND:
+        case GBN_EVENT_TYPE::CKSUM_ERR:
             status = "RT";
             break;
     }
     logStream << "[DataLinkLayer] TX\t"
-              << dll->sendCount++ << ", pdu_to_send=" << pdu_to_send << ", status=" << status << ", ackedNo=" << int(dll->ack_expected) << std::endl;
+              << dll->sendCount << ", pdu_to_send=" << pdu_to_send << ", status=" << status << ", ackedNo=" << int(dll->ack_expected) << std::endl;
     logStream.flush();
+
+    std::cout << "[DataLinkLayer] TX\t"
+              << dll->sendCount << ", pdu_to_send=" << pdu_to_send << ", status=" << status << ", ackedNo=" << int(dll->ack_expected) << std::endl;
 }
 
 void Debug::logAR(DataLinkLayer* dll, int pdu_recv, std::string status) {
@@ -77,6 +82,8 @@ void Debug::logAR(DataLinkLayer* dll, int pdu_recv, std::string status) {
     logStream << "[DataLinkLayer] RX\t"
               << dll->recvCount << ", pdu_exp=" << int(dll->frame_expected) << ", pdu_recv=" << pdu_recv << ", status=" << status << std::endl;
     logStream.flush();
+    std::cout << "[DataLinkLayer] RX\t"
+              << dll->recvCount << ", pdu_exp=" << int(dll->frame_expected) << ", pdu_recv=" << pdu_recv << ", status=" << status << std::endl;
 }
 
 void Debug::logD(NetworkLayer* nl, std::string msg) {
@@ -85,6 +92,8 @@ void Debug::logD(NetworkLayer* nl, std::string msg) {
 
     logStream << "[NetworkLayer] " << msg << std::endl;
     logStream.flush();
+
+    std::cout << "[NetworkLayer] " << msg << std::endl;
 }
 
 std::string

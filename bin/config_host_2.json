@@ -1,10 +1,11 @@
 {
     "UDPPort": 12346,
     "DataSize": 1024,
-    "ErrorRate": 100,
+    "ErrorRate": 0,
     "LostRate": 0,
-    "SWSize": 16,
+    "OnDebug": true,
+    "SWSize": 7,
     "InitSeqNo": 0,
-    "Timeout": 1000,
+    "Timeout": 2000,
     "SavePath": ".\\recv2\\"
 }

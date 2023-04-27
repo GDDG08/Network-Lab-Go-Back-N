@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 16:09:40
+ * @LastEditTime : 2023-04-27 18:05:23
  */
 #include "physicalLayer.hpp"
 #include "dataLinkLayer.hpp"
@@ -94,9 +94,9 @@ int PhysicalLayer::sendData(std::string info, PhyAddrPort ap, bool isDebug) {
         WSACleanup();
         return 1;
     }
-    std::cout << "[PhysicalLayer] Sent data To "
-              << inet_ntoa(dstAddr.sin_addr) << ":" << ntohs(dstAddr.sin_port) << "-->" << std::endl
-              << Debug::str2hex(info) << std::endl;
+    // std::cout << "[PhysicalLayer] Sent data To "
+    //           << inet_ntoa(dstAddr.sin_addr) << ":" << ntohs(dstAddr.sin_port) << "-->" << std::endl
+    //           << Debug::str2hex(info) << std::endl;
     // Debug::logD(this, "[PhysicalLayer] TX " + Debug::str2hex(info));
     return 0;
 }
@@ -114,7 +114,7 @@ RecvData PhysicalLayer::recvData() {
         std::cerr << "[PhysicalLayer][Error] recv failed with error: " << WSAGetLastError() << std::endl;
         closesocket(sock);
         WSACleanup();
-        // exit(1);
+        exit(1);
         return RecvData();
     }
     if (recvResult == 0) {
@@ -124,11 +124,11 @@ RecvData PhysicalLayer::recvData() {
     PhyAddrPort ap = {ntohs(senderAddr.sin_port), inet_ntoa(senderAddr.sin_addr)};
     RecvData rd(ap, buff, recvResult);
     // Display the received data
-    std::cout
-        << "[PhysicalLayer] Received data From "
-        << ap.addr << ":" << ap.port << "-->" << std::endl
-        << Debug::str2hex(rd.buff) << std::endl;
-    Debug::logD(this, "[PhysicalLayer] RX " + Debug::str2hex(rd.buff));
+    // std::cout
+    //     << "[PhysicalLayer] Received data From "
+    //     << ap.addr << ":" << ap.port << "-->" << std::endl
+    //     << Debug::str2hex(rd.buff) << std::endl;
+    // Debug::logD(this, "[PhysicalLayer] RX " + Debug::str2hex(rd.buff));
 
     return rd;
 }
@@ -137,7 +137,10 @@ int PhysicalLayer::startRecvTask(DataLinkLayer* dllPtr) {
     std::thread recvTask([this, dllPtr] {
         while (this->onRecvTask) {
             RecvData data = this->recvData();
-            std::cout << "[PhysicalLayer][RecvTask] onRecv!" << std::endl;
+            if (data.buff.length() == 0) {
+                continue;
+            }
+            // std::cout << "[PhysicalLayer][RecvTask] onRecv!" << std::endl;
             // msg.push_one((pi){"recv_data", tmpp});
             // if (data.buff[0] == '\0')
             //     continue;

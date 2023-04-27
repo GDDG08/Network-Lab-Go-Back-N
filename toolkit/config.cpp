@@ -28,6 +28,7 @@ Config::ConfigBean Config::parseConfig() {
     cb.dataSize = j["DataSize"];
     cb.errorRate = j["ErrorRate"];
     cb.lostRate = j["LostRate"];
+    cb.onDebug = j["OnDebug"];
     cb.swSize = j["SWSize"];
     cb.initSeqNo = j["InitSeqNo"];
     cb.timeout = j["Timeout"];

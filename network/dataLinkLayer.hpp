@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-23 16:06:33
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:34:36
+ * @LastEditTime : 2023-04-27 18:50:12
  */
 #ifndef DATALINKLAYER_HPP
 #define DATALINKLAYER_HPP
@@ -19,7 +19,7 @@
 class PhysicalLayer;
 class NetworkLayer;
 
-#define MAX_SEQ 7
+// #define MAX_SEQ 7
 typedef struct {
     GBN_EVENT_TYPE type;
     Frame::Header header;
@@ -43,19 +43,23 @@ class DataLinkLayer {
     uint8_t ack_expected;       /* oldest frame as yet unacknowledged */
     uint8_t frame_expected;     /* next frame_expected on inbound stream */
 
-    GBN_EVENT buffer[MAX_SEQ + 1]; /* buffers for the outbound stream */
-    uint8_t nbuffered;             /* number of output buffers currently in use */
-    GBN_EVENT_TYPE event;
+    GBN_EVENT* buffer; /* buffers for the outbound stream */
+    uint8_t nbuffered; /* number of output buffers currently in use */
+    uint8_t nqueued;   /* number of network event currently in queue */
+    // GBN_EVENT_TYPE event;
 
     bool isNetworkLayerEnabled = false;
 
     int DATA_SIZE;
     int SW_SIZE;
+    int MAX_SEQ;
     int INIT_SEQ_NO;
     int TIMEOUT;
+    bool ON_DEBUG;
 
     vector<Timer*> timerList;
     mutex mtx_timer;
+    bool onTimeout = false;
 
     bool isACKsent = true;
     Timer* ackTime;
@@ -73,10 +77,12 @@ class DataLinkLayer {
 
     void enable_network_layer();
     void disable_network_layer();
+    void update_state_network_layer();
+   
     void to_network_layer(PhyAddrPort ap, std::string packet);
 
     int sendData(PhyAddrPort ap, std::string packet);
-    int reSendAllData();
+    int reSendAllData(GBN_EVENT_TYPE type);
     int sendACK(PhyAddrPort ap);
     int sendNAK(PhyAddrPort ap, uint8_t seq);
     void handleEvents();

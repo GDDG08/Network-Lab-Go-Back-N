@@ -31,6 +31,7 @@ class Config {
         int dataSize;
         int errorRate;
         int lostRate;
+        bool onDebug;
         int swSize;
         int initSeqNo;
         int timeout;
@@ -42,6 +43,7 @@ class Config {
             cout << "DataSize: " << dataSize << endl;
             cout << "ErrorRate: " << errorRate << endl;
             cout << "LostRate: " << lostRate << endl;
+            cout << "OnDebug: " << onDebug << endl;
             cout << "SWSize: " << swSize << endl;
             cout << "InitSeqNo: " << initSeqNo << endl;
             cout << "Timeout: " << timeout << endl;

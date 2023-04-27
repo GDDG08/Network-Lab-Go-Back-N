@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 16:10:06
+ * @LastEditTime : 2023-04-27 19:37:00
  */
 
 #include <iostream>
@@ -57,13 +57,18 @@ int main() {
     DataLinkLayer dll(cfg);
     dll.init();
 
+    // cout << "Press any key to continue..." << endl;
+
     while (true) {
         //     // pause in cmd
-        cout << "Press any key to continue..." << endl;
+        // cout << "Press any key to continue..." << endl;
         getchar();
+        for (int i = 0; i < 10; i++) {
+            dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
+        }
 
         // pl.sendData("Hello World!", {PORT_TEST, "127.0.0.1"}, true);
-        dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
+        // dll.onNetworkLayerTx({PORT_TEST, "127.0.0.1"}, "01234567890");
     }
 
     // std::thread test1([&pl, PORT_TEST]() {
@@ -82,8 +87,6 @@ int main() {
 
     // test1.detach();
     // test2.detach();
-
-
 
     // dll.test_timer();
     // use two threads ad producer and consumer to test BlockingQueue
