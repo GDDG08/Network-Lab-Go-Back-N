@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 16:40:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 18:15:57
+ * @LastEditTime : 2023-04-28 03:05:58
  */
 #include "debug.hpp"
 
@@ -15,7 +15,8 @@
 
 bool Debug::isEnabled = false;
 std::string Debug::logFile = "";
-std::ofstream Debug::logStream = std::ofstream();
+std::ofstream Debug::fStream = std::ofstream();
+std::stringstream Debug::logStream = std::stringstream();
 
 void Debug::init(std::string hostname) {
     // if .\\log\\ not exist, create it use windows
@@ -26,35 +27,35 @@ void Debug::init(std::string hostname) {
 
     logFile = ".\\log\\" + hostname + "_" + std::to_string(time(nullptr)) + ".log";
     std::cout << "[Debug] logFile: " << logFile << std::endl;
-    logStream.open(logFile);
-    if (!logStream.is_open()) {
-        std::cout << "[Debug] logStream open failed" << std::endl;
+    fStream.open(logFile);
+    if (!fStream.is_open()) {
+        std::cout << "[Debug] log file open failed" << std::endl;
     } else {
         isEnabled = true;
+        std::cout.rdbuf(nullptr);
+        std::thread([]() {
+            while (Debug::isEnabled) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                Debug::fStream << Debug::logStream.str();
+                Debug::logStream.str("");
+            }
+        })        .detach();
     }
 }
 
 void Debug::logD(PhysicalLayer* pl, std::string msg) {
-    if (!isEnabled)
-        return;
     logStream << "[PhysicalLayer] " << msg << std::endl;
     logStream.flush();
     // std::cout << "[PhysicalLayer] " << msg << std::endl;
 }
 
 void Debug::logD(DataLinkLayer* dll, std::string msg) {
-    if (!isEnabled)
-        return;
-
     logStream << "[DataLinkLayer] " << msg << std::endl;
     logStream.flush();
     std::cout << "[DataLinkLayer] " << msg << std::endl;
 }
 
 void Debug::logAT(DataLinkLayer* dll, int pdu_to_send, GBN_EVENT_TYPE statusCode) {
-    if (!isEnabled)
-        return;
-
     std::string status;
     switch (statusCode) {
         case GBN_EVENT_TYPE::NETWORK_LAYER_READY:
@@ -76,9 +77,6 @@ void Debug::logAT(DataLinkLayer* dll, int pdu_to_send, GBN_EVENT_TYPE statusCode
 }
 
 void Debug::logAR(DataLinkLayer* dll, int pdu_recv, std::string status) {
-    if (!isEnabled)
-        return;
-
     logStream << "[DataLinkLayer] RX\t"
               << dll->recvCount << ", pdu_exp=" << int(dll->frame_expected) << ", pdu_recv=" << pdu_recv << ", status=" << status << std::endl;
     logStream.flush();
@@ -87,9 +85,6 @@ void Debug::logAR(DataLinkLayer* dll, int pdu_recv, std::string status) {
 }
 
 void Debug::logD(NetworkLayer* nl, std::string msg) {
-    if (!isEnabled)
-        return;
-
     logStream << "[NetworkLayer] " << msg << std::endl;
     logStream.flush();
 

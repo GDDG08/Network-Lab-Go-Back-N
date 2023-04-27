@@ -27,7 +27,8 @@ class Debug {
    private:
     static bool isEnabled;
     static std::string logFile;
-    static std::ofstream logStream;
+    static std::stringstream logStream;
+    static std::ofstream fStream;
 
    public:
     static void init(std::string hostname);
