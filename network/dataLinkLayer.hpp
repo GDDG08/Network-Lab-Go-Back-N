@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-23 16:06:33
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 18:50:12
+ * @LastEditTime : 2023-04-28 00:38:12
  */
 #ifndef DATALINKLAYER_HPP
 #define DATALINKLAYER_HPP
@@ -47,8 +47,9 @@ class DataLinkLayer {
     uint8_t nbuffered; /* number of output buffers currently in use */
     uint8_t nqueued;   /* number of network event currently in queue */
     // GBN_EVENT_TYPE event;
-
+    mutex mtx_Nqueue;
     bool isNetworkLayerEnabled = false;
+    std::condition_variable networklayer_ready;
 
     int DATA_SIZE;
     int SW_SIZE;
@@ -78,7 +79,7 @@ class DataLinkLayer {
     void enable_network_layer();
     void disable_network_layer();
     void update_state_network_layer();
-   
+
     void to_network_layer(PhyAddrPort ap, std::string packet);
 
     int sendData(PhyAddrPort ap, std::string packet);

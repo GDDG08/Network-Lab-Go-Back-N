@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-22 17:05:53
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 01:06:39
+ * @LastEditTime : 2023-04-28 00:11:06
  */
 #ifndef FRAME_HPP
 #define FRAME_HPP
@@ -50,7 +50,7 @@ class Frame {
         header.type = (FRAME_TYPE)buff[0];
         header.seq = buff[1];
         header.ack = buff[2];
-        uint16_t len = (buff[3] << 8) | buff[4];
+        uint16_t len = ((buff[3]& 0xff) << 8) | (buff[4] & 0xff);
         info = buff.substr(5, len);
         checksum = ((buff[5 + len] & 0xff) << 8) | (buff[6 + len] & 0xff);
     }

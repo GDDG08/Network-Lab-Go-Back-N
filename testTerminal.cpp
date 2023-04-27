@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 23:14:21
+ * @LastEditTime : 2023-04-28 01:35:29
  */
 
 #include <iostream>
@@ -31,10 +31,13 @@ int main() {
     cfg.printConfig();
 
     int PORT_TEST = 0;
+    std::string ADDR_TEST = "127.0.0.1";
     if (cfg.udpPort == 12345) {
         PORT_TEST = 12346;
+        ADDR_TEST = "192.168.37.250";
     } else {
         PORT_TEST = 12345;
+        ADDR_TEST = "192.168.37.100";
     }
 
     Debug::init("GBN_" HOST_ID);
@@ -125,6 +128,14 @@ int main() {
 
     NetworkLayer nl(cfg);
     nl.init();
+
+    // std::string buff;
+    // buff.resize(2);
+    // buff[0] = 0x01;
+    // buff[1] = 0xEF;
+    // uint16_t len = (buff[0] << 8) | buff[1] ;
+    // len = (buff[0] << 8) | (buff[1] & 0xff);
+
     while (true) {
         // pause in cmd
         cout << "Press any key to continue..." << endl;
@@ -132,7 +143,9 @@ int main() {
 
         // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
         // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-        nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test.txt");
+        // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test3.txt");
+        // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
+        nl.sendFile(PhyAddrPort{PORT_TEST, ADDR_TEST}, "test5.txt");
 
         // test ack piggyback
 

@@ -32,7 +32,7 @@ class Packet {
 
     Packet(std::string buff) {
         type = (PACKET_TYPE)buff[0];
-        uint16_t len = (buff[1] << 8) | buff[2];
+        uint16_t len = ((buff[1] & 0xff) << 8) | (buff[2] & 0xff);
         info = buff.substr(3, len);
     }
 
@@ -65,7 +65,7 @@ class FileRequestInfo {
         const char* p = buff.c_str();
         memcpy(&fileID, p, 8);
         memcpy(&fileSize, p + 8, 8);
-        uint16_t len = (buff[16] << 8) | buff[17];
+        uint16_t len = ((buff[16] & 0xff) << 8) | (buff[17] & 0xff);
         filename = buff.substr(18, len);
     }
 
@@ -94,7 +94,7 @@ class FileBuffInfo {
         const char* p = buff.c_str();
         memcpy(&fileID, p, 8);
         memcpy(&fileOffset, p + 8, 8);
-        uint16_t len = (buff[16] << 8) | buff[17];
+        uint16_t len = ((buff[16]& 0xff) << 8) | (buff[17]& 0xff);
         data = buff.substr(18, len);
     }
     std::string to_buff() {

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:59:13
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:09:59
+ * @LastEditTime : 2023-04-28 00:23:42
  */
 
 #include "networkLayer.hpp"
@@ -130,6 +130,7 @@ void NetworkLayer::handlePackets() {
         case PACKET_TYPE::FILE_RQT: {
             std::cout << "[NetworkLayer] recv file rqt from " << ap.addr << ":" << ap.port << std::endl;
             FileRequestInfo info(packet.info);
+            Debug::logD(this, "recv file RQT from " + ap.addr + ":" + std::to_string(ap.port) + " of ["+std::to_string(info.fileID)+"]" + info.filename + "(" + std::to_string(info.fileSize) + " Bytes)");
             filesMap.insert({info.fileID,
                              FileInfo{info.fileID, info.fileSize, info.filename, ap}});
             // if file exits then delete it
@@ -145,6 +146,8 @@ void NetworkLayer::handlePackets() {
             FileBuffInfo info(packet.info);
             FileInfo fInfo = filesMap[info.fileID];
 
+            Debug::logD(this, "recv file BUF of " + std::to_string(info.fileID) + " +" + std::to_string(info.fileOffset));
+
             std::string path = cfg.savePath + fInfo.filename;
             std::ofstream file(path, std::ios::binary | std::ios::app);
             file.write(info.data.c_str(), info.data.length());
@@ -155,6 +158,7 @@ void NetworkLayer::handlePackets() {
             std::cout << "[NetworkLayer] recv file finish from " << ap.addr << ":" << ap.port << std::endl;
 
             FileFinishInfo info(packet.info);
+            Debug::logD(this, "recv file ["+std::to_string(info.fileID)+"]"+filesMap[info.fileID].filename + " finished!");
             // delete filesMap[fileID] from map
             // auto index = filesMap.find(info.fileID);
             filesMap.erase(info.fileID);

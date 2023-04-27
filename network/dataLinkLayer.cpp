@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 23:26:32
+ * @LastEditTime : 2023-04-28 00:44:04
  */
 #include "dataLinkLayer.hpp"
 #include "physicalLayer.hpp"
@@ -41,7 +41,7 @@ void DataLinkLayer::init() {
             this->handleEvents();
 
             // debug
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+            // std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     });
 
@@ -174,6 +174,10 @@ void DataLinkLayer::handleEvents() {
                         nbuffered--;              /* one frame fewer buffered */
                         stop_timer(ack_expected); /* frame arrived intact; stop timer */
                         inc(ack_expected);        /* contract sender’s window */
+
+                        update_state_network_layer();
+                        networklayer_ready.notify_one();
+                        
                     }
                     break;
                 case FRAME_TYPE::NAK:
@@ -204,7 +208,6 @@ void DataLinkLayer::handleEvents() {
             reSendAllData(GBN_EVENT_TYPE::TIMEOUT); /* resend buffered frames */
             this->onTimeout = false;
     }
-    update_state_network_layer();
 }
 
 void DataLinkLayer::init_timer() {
@@ -293,17 +296,23 @@ void DataLinkLayer::onPhysicalLayerRx(RecvData data) {
 
 void DataLinkLayer::onNetworkLayerTx(PhyAddrPort ap, std::string packet) {
     // wait for isNetworkLayerEnabled to be true
-    while (!isNetworkLayerEnabled) {
-        // this thread sleep for 10ms
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    // while (!isNetworkLayerEnabled) {
+    //     // this thread sleep for 10ms
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    // }
+
+    std::unique_lock<std::mutex> lock(mtx_Nqueue);
+    if (!isNetworkLayerEnabled) {
+        networklayer_ready.wait(lock);
     }
+
     eventQueue->put({GBN_EVENT_TYPE::NETWORK_LAYER_READY,
                      Frame::Header(),
                      packet,
                      ap});
     nqueued++;
-    std::cout << "[DataLinkLayer] onNetworkLayerTx put one with nqueued as " << int(nqueued) << std::endl;
     update_state_network_layer();
+    std::cout << "[DataLinkLayer] onNetworkLayerTx put one with nqueued as " << int(nqueued) << std::endl;
 }
 
 void DataLinkLayer::testDLL(PhyAddrPort ap) {
