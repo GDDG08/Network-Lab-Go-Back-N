@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-28 01:35:29
+ * @LastEditTime : 2023-04-28 03:24:42
  */
 
 #include <iostream>
@@ -136,23 +136,26 @@ int main() {
     // uint16_t len = (buff[0] << 8) | buff[1] ;
     // len = (buff[0] << 8) | (buff[1] & 0xff);
 
-    while (true) {
-        // pause in cmd
-        cout << "Press any key to continue..." << endl;
-        getchar();
+    // pause for 3 seconds
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    // while (true) {
+    //     // pause in cmd
+    //     cout << "Press any key to continue..." << endl;
+    //     getchar();
 
-        // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-        // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test3.txt");
-        // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
-        nl.sendFile(PhyAddrPort{PORT_TEST, ADDR_TEST}, "test5.txt");
+    // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+    // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+    nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test3.txt");
+    nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
+    // nl.sendFile(PhyAddrPort{PORT_TEST, ADDR_TEST}, "test5.txt");
 
-        // test ack piggyback
+    // test ack piggyback
 
-        // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+    // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+    // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
 
-
-        // Todo：nbuffer诈尸事件，ACK不死事件
-    }
+    // Todo：nbuffer诈尸事件，ACK不死事件
+    // }
+    getchar();
+    return 0;
 }

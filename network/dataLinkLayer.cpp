@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Code\network\dataLinkLayer.cpp
+ * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\dataLinkLayer.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-28 02:53:50
+ * @LastEditTime : 2023-04-28 15:26:02
  */
 #include "dataLinkLayer.hpp"
 #include "physicalLayer.hpp"
@@ -142,12 +142,16 @@ void DataLinkLayer::handleEvents() {
         case GBN_EVENT_TYPE::NETWORK_LAYER_READY: /* the network layer has a packet to send */
             std::cout << "[DataLinkLayer][INFO] NETWORK_LAYER_READY sending " << int(next_frame_to_send) << std::endl;
             Debug::logAT(this, next_frame_to_send, GBN_EVENT_TYPE::NETWORK_LAYER_READY);
-            nqueued--;
             /* Accept, save, and transmit a new frame. */
             buffer[next_frame_to_send] = event; /* insert event into buffer */
             nbuffered++;                        /* expand the sender’s window */
-            sendData(ap, packet);               /* transmit the frame */
-            inc(next_frame_to_send);            /* advance sender’s upper window edge */
+            nqueued--;
+            // if (nbuffered > SW_SIZE) {
+            //     std::cout << "[DataLinkLayer][ERROR] nbuffered > SW_SIZE" << std::endl;
+            //     // exit(1);
+            // }
+            sendData(ap, packet);    /* transmit the frame */
+            inc(next_frame_to_send); /* advance sender’s upper window edge */
             break;
         case GBN_EVENT_TYPE::FRAME_ARRIVAL: /* a data or control frame has arrived */
             std::cout << "[DataLinkLayer][INFO] FRAME_ARRIVAL" << std::endl;
@@ -181,7 +185,9 @@ void DataLinkLayer::handleEvents() {
                         inc(ack_expected);        /* contract sender’s window */
 
                         update_state_network_layer();
-                        networklayer_ready.notify_one();
+                        if (isNetworkLayerEnabled) {
+                            networklayer_ready.notify_one();
+                        }
                     }
                     break;
                 case FRAME_TYPE::NAK:
@@ -213,7 +219,7 @@ void DataLinkLayer::handleEvents() {
             reSendAllData(GBN_EVENT_TYPE::TIMEOUT); /* resend buffered frames */
             this->onTimeout = false;
     }
-    // std::cout << "BUGGGGGG nqueued=" << std::to_string(nqueued) << " nbuffered=" << std::to_string(nbuffered) << std::endl;
+    // std::cout << "BUGGGGGG nqueued=" << std::to_string(nqueued) << " nbuffered=" << std::to_string(nbuffered) << " next_frame_to_send" << std::to_string(next_frame_to_send) << " ack_expected" << std::to_string(ack_expected) << std::endl;
     // if (nbuffered > 200)
     //     exit(0);
 }
