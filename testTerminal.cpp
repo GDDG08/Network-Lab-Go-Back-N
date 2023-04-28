@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Code\testTerminal.cpp
+ * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\testTerminal.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-29 02:36:36
+ * @LastEditTime : 2023-04-29 04:35:02
  */
 
 #include <iostream>
@@ -140,15 +140,26 @@ int main() {
     // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     // while (true) {
     //     // pause in cmd
-    //     cout << "Press any key to continue..." << endl;
+    cout << "Press any key to continue..." << endl;
     getchar();
 
     // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
     // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
     // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test2.txt");
     // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "GBN_Network1.exe");
-    nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test3.txt");
-    nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
+    // if (cfg.udpPort == 12345) {
+    //     nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test3.txt");
+    nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test2.txt");
+    // } else {
+    //     nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
+    // }
+
+    // nl.sendFile(PhyAddrPort{12346, "127.0.0.1"}, "test6.txt");
+    // nl.sendFile(PhyAddrPort{12347, "127.0.0.1"}, "test6.txt");
+    // nl.sendFile(PhyAddrPort{12348, "127.0.0.1"}, "test6.txt");
+    // nl.sendFile(PhyAddrPort{12349, "127.0.0.1"}, "test6.txt");
+    // nl.sendFile(PhyAddrPort{12350, "127.0.0.1"}, "test6.txt");
+
     // nl.sendFile(PhyAddrPort{PORT_TEST, ADDR_TEST}, "test5.txt");
 
     // test ack piggyback

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:48
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 23:56:04
+ * @LastEditTime : 2023-04-29 04:33:35
  */
 #include "physicalLayer.hpp"
 #include "dataLinkLayer.hpp"
@@ -30,7 +30,7 @@ int PhysicalLayer::init() {
     // Create a UDP socket
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sock == INVALID_SOCKET) {
-        std::cerr << "[PhysicalLayer][Error] socket creation failed with error: " << WSAGetLastError() << std::endl;
+        std::cerr << "[PhysicalLayer][Error] socket creation failed with error: " << std::to_string(WSAGetLastError()) << std::endl;
         WSACleanup();
         return 1;
     }
@@ -43,7 +43,7 @@ int PhysicalLayer::init() {
     // Bind the socket to the receive address
     int bindResult = bind(sock, (sockaddr*)&recvAddr, sizeof(recvAddr));
     if (bindResult == SOCKET_ERROR) {
-        std::cerr << "[PhysicalLayer][Error] bind failed with error: " << WSAGetLastError() << std::endl;
+        std::cerr << "[PhysicalLayer][Error] bind failed with error: " << std::to_string(WSAGetLastError()) << std::endl;
         closesocket(sock);
         WSACleanup();
         return 1;
