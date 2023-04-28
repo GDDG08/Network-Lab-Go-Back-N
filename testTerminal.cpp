@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-28 21:31:07
+ * @LastEditTime : 2023-04-28 22:12:03
  */
 
 #include <iostream>
@@ -145,7 +145,8 @@ int main() {
 
     // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
     // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-    nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test6.txt");
+    if (cfg.udpPort == 12345)
+        nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test6.txt");
     // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
     // nl.sendFile(PhyAddrPort{PORT_TEST, ADDR_TEST}, "test5.txt");
 

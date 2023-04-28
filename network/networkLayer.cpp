@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\networkLayer.cpp
+ * @FilePath     : \Code\network\networkLayer.cpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:59:13
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-28 16:17:27
+ * @LastEditTime : 2023-04-28 22:06:14
  */
 
 #include "networkLayer.hpp"
@@ -163,7 +163,10 @@ void NetworkLayer::handlePackets() {
             // delete filesMap[fileID] from map
             // auto index = filesMap.find(info.fileID);
             filesMap.erase(info.fileID);
-            exit(0);
+            std::thread([]() {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                exit(0);
+            }).detach();
             break;
         }
         default:

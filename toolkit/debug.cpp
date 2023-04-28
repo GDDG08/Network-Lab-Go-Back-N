@@ -31,6 +31,7 @@ void Debug::init(std::string hostname) {
         std::cout << "[Debug] logStream open failed" << std::endl;
     } else {
         isEnabled = true;
+        std::cout.rdbuf(nullptr);
     }
 }
 
