@@ -1,11 +1,1 @@
-{
-    "UDPPort": 12345,
-    "DataSize": 512,
-    "ErrorRate": 5,
-    "LostRate": 5,
-    "OnDebug": true,
-    "SWSize": 7,
-    "InitSeqNo": 0,
-    "Timeout": 200,
-    "SavePath": ".\\recv1\\"
-}
+{"UDPPort": 12345, "DataSize": 512, "ErrorRate": 5, "LostRate": 5, "OnDebug": true, "SWSize": 7, "InitSeqNo": 0, "Timeout": 200, "SavePath": ".\\recv1\\"}

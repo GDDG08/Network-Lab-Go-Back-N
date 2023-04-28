@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:20
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-28 16:20:11
+ * @LastEditTime : 2023-04-28 21:31:07
  */
 
 #include <iostream>
@@ -40,7 +40,7 @@ int main() {
         // ADDR_TEST = "192.168.37.100";
     }
 
-    Debug::init("GBN_" HOST_ID);
+    Debug::init("GBN_" HOST_ID "_" + to_string(cfg.dataSize) + "_" + to_string(cfg.errorRate) + "_" + to_string(cfg.lostRate) + "_" + to_string(cfg.swSize) + "_" + to_string(cfg.timeout));
 
     // PhysicalLayer pl(cfg);
     // pl.init();
@@ -137,24 +137,24 @@ int main() {
     // len = (buff[0] << 8) | (buff[1] & 0xff);
 
     // pause for 3 seconds
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     // while (true) {
-        //     // pause in cmd
-        //     cout << "Press any key to continue..." << endl;
-        getchar();
+    //     // pause in cmd
+    //     cout << "Press any key to continue..." << endl;
+    // getchar();
 
-        // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
-        nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test2.txt");
-        // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
-        // nl.sendFile(PhyAddrPort{PORT_TEST, ADDR_TEST}, "test5.txt");
+    // nl.dataLinkLayer->onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+    // nl.sendHello(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+    nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test6.txt");
+    // nl.sendFile(PhyAddrPort{PORT_TEST, "127.0.0.1"}, "test4.txt");
+    // nl.sendFile(PhyAddrPort{PORT_TEST, ADDR_TEST}, "test5.txt");
 
-        // test ack piggyback
+    // test ack piggyback
 
-        // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
-        // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
+    // dll.onNetworkLayerTx(PhyAddrPort{PORT_TEST, "127.0.0.1"}, Packet(PACKET_TYPE::HELLO, "Hello World!").to_buff());
+    // dll.testDLL(PhyAddrPort{PORT_TEST, "127.0.0.1"});
 
-        // Todo：nbuffer诈尸事件，ACK不死事件
+    // Todo：nbuffer诈尸事件，ACK不死事件
     // }
     getchar();
     return 0;

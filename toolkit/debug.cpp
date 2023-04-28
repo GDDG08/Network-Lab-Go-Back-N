@@ -24,7 +24,7 @@ void Debug::init(std::string hostname) {
         _mkdir(".\\log\\");
     }
 
-    logFile = ".\\log\\" + hostname + "_" + std::to_string(time(nullptr)) + ".log";
+    logFile = ".\\log\\" + hostname+ ".log";
     std::cout << "[Debug] logFile: " << logFile << std::endl;
     logStream.open(logFile);
     if (!logStream.is_open()) {

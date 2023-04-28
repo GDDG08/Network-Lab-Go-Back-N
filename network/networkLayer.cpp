@@ -163,7 +163,7 @@ void NetworkLayer::handlePackets() {
             // delete filesMap[fileID] from map
             // auto index = filesMap.find(info.fileID);
             filesMap.erase(info.fileID);
-
+            exit(0);
             break;
         }
         default:
