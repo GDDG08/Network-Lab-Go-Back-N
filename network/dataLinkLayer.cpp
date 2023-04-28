@@ -94,6 +94,7 @@ int DataLinkLayer::sendData(PhyAddrPort ap, std::string packet) {
 }
 
 int DataLinkLayer::sendACK(PhyAddrPort ap) {
+    std::unique_lock<std::mutex> lock(mtx_ack);
     // return 2;
     if (!isACKsent)
         return 1;
