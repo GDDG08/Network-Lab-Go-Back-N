@@ -45,7 +45,7 @@ class NetworkLayer {
     std::thread packetHandler;
 
     std::map<unsigned long long, FileInfo> filesMap;
-    const static int FILE_FRAME_SIZE = 4096;
+    const static int FILE_FRAME_SIZE = 512;
     unsigned long long FileID = 0;
     void handlePackets();
 

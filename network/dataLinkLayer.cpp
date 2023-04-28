@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2023-04-21 14:58:59
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-28 16:39:31
+ * @LastEditTime : 2023-04-29 03:49:03
  */
 #include "dataLinkLayer.hpp"
 #include "physicalLayer.hpp"
@@ -164,13 +164,14 @@ void DataLinkLayer::handleEvents() {
                         std::cout << "[DataLinkLayer][INFO] header.type DATA accepted " << int(frame_expected) << std::endl;
                         Debug::logAR(this, header.seq, "OK");
 
-                        recvBuffMap[ap.getStr()] += packet.substr(1, packet.size() - 1);
-                        if (packet[0] == '#') {
-                            to_network_layer(ap, recvBuffMap[ap.getStr()]); /* pass packet to network layer */
-                            recvBuffMap[ap.getStr()].clear();
-                        }
-                        inc(frame_expected); /* advance lower edge of receiver’s window */
-                        sendACK(ap);         /* acknowledge the frame */
+                        // recvBuffMap[ap.getStr()] += packet.substr(1, packet.size() - 1);
+                        // if (packet[0] == '#') {
+                        //     to_network_layer(ap, recvBuffMap[ap.getStr()]); /* pass packet to network layer */
+                        //     recvBuffMap[ap.getStr()].clear();
+                        // }
+                        to_network_layer(ap, packet); /* pass packet to network layer */
+                        inc(frame_expected);          /* advance lower edge of receiver’s window */
+                        sendACK(ap);                  /* acknowledge the frame */
                     } else {
                         Debug::logAR(this, header.seq, "NoErr");
                     }
@@ -321,33 +322,33 @@ void DataLinkLayer::onPhysicalLayerRx(RecvData data) {
 
 void DataLinkLayer::onNetworkLayerTx(PhyAddrPort ap, std::string packet) {
     // FRAMING and THEN ADD TO THE QUEUE
-    int frameNum = packet.length() / DATA_SIZE;
-    int lastSize = packet.length() % DATA_SIZE;
-    if (lastSize != 0)
-        frameNum++;
+    // int frameNum = packet.length() / DATA_SIZE;
+    // int lastSize = packet.length() % DATA_SIZE;
+    // if (lastSize != 0)
+    //     frameNum++;
 
-    std::cout << "[DataLinkLayer] onNetworkLayerTx frameNum: " << frameNum + 1 << std::endl;
-    for (size_t i = 0; i < frameNum; i++) {
-        std::string frame;
-        if (i < frameNum - 1) {
-            frame = "@" + packet.substr(i * DATA_SIZE, DATA_SIZE);
-        } else {
-            frame = "#" + packet.substr(i * DATA_SIZE, lastSize);
-        }
-
-        std::unique_lock<std::mutex> lock(mtx_Nqueue);
-        if (!isNetworkLayerEnabled) {
-            networklayer_ready.wait(lock);
-        }
-
-        eventQueue->put({GBN_EVENT_TYPE::NETWORK_LAYER_READY,
-                         Frame::Header(),
-                         frame,
-                         ap});
-        nqueued++;
-        update_state_network_layer();
-        // std::cout << "[DataLinkLayer] onNetworkLayerTx put frame " << i << " as seq " << int(nqueued) << std::endl;
+    // std::cout << "[DataLinkLayer] onNetworkLayerTx frameNum: " << frameNum + 1 << std::endl;
+    // for (size_t i = 0; i < frameNum; i++) {
+    // std::string frame;
+    // if (i < frameNum - 1) {
+    //     frame = "@" + packet.substr(i * DATA_SIZE, DATA_SIZE);
+    // } else {
+    //     frame = "#" + packet.substr(i * DATA_SIZE, lastSize);
+    // }
+    std::unique_lock<std::mutex> lock(mtx_Nqueue);
+    if (!isNetworkLayerEnabled) {
+        networklayer_ready.wait(lock);
     }
+
+    eventQueue->put({GBN_EVENT_TYPE::NETWORK_LAYER_READY,
+                     Frame::Header(),
+                     //  frame,
+                     packet,
+                     ap});
+    nqueued++;
+    update_state_network_layer();
+    // std::cout << "[DataLinkLayer] onNetworkLayerTx put frame " << i << " as seq " << int(nqueued) << std::endl;
+    // }
 }
 
 void DataLinkLayer::testDLL(PhyAddrPort ap) {
