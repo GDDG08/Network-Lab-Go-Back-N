@@ -1,6 +1,6 @@
 {
     "UDPPort": 12345,
-    "DataSize": 1024,
+    "DataSize": 4096,
     "ErrorRate": 5,
     "LostRate": 5,
     "OnDebug": true,

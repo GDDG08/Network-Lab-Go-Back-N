@@ -51,6 +51,8 @@ class DataLinkLayer {
     bool isNetworkLayerEnabled = false;
     std::condition_variable networklayer_ready;
 
+    std::map<std::string, std::string> recvBuffMap;
+
     int DATA_SIZE;
     int SW_SIZE;
     int MAX_SEQ;

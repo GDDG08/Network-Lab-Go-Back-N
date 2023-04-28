@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Code\network\physicalLayer.hpp
+ * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\physicalLayer.hpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-21 15:13:27
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-27 14:07:05
+ * @LastEditTime : 2023-04-28 16:37:04
  */
 #ifndef PHYSICALLAYER_HPP
 #define PHYSICALLAYER_HPP
@@ -29,7 +29,7 @@ class PhysicalLayer {
     friend class Debug;
 
    private:
-    const static int BUFF_LEN = 1024;
+    const static int BUFF_LEN = 65536;
     int listen_port;
     int ERROR_RATE;
     int LOST_RATE;

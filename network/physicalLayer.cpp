@@ -89,7 +89,7 @@ int PhysicalLayer::sendData(std::string info, PhyAddrPort ap, bool isDebug) {
 
     int sendResult = sendto(sock, sendData, info.length(), 0, (sockaddr*)&dstAddr, sizeof(dstAddr));
     if (sendResult == SOCKET_ERROR) {
-        std::cerr << "[PhysicalLayer][Error] sendto failed with error: " << WSAGetLastError() << std::endl;
+        std::cerr << "[PhysicalLayer][Error] sendto failed with error: " << std::to_string(WSAGetLastError()) << std::endl;
         closesocket(sock);
         WSACleanup();
         return 1;
@@ -111,7 +111,7 @@ RecvData PhysicalLayer::recvData() {
     // int recvResult = recv(sock, buff, BUFF_LEN, 0);
     int recvResult = recvfrom(sock, buff, BUFF_LEN, 0, (sockaddr*)&senderAddr, &senderAddrSize);
     if (recvResult == SOCKET_ERROR) {
-        std::cerr << "[PhysicalLayer][Error] recv failed with error: " << WSAGetLastError() << std::endl;
+        std::cerr << "[PhysicalLayer][Error] recv failed with error: " << std::to_string(WSAGetLastError()) << std::endl;
         closesocket(sock);
         WSACleanup();
         exit(1);
@@ -126,7 +126,7 @@ RecvData PhysicalLayer::recvData() {
     // Display the received data
     // std::cout
     //     << "[PhysicalLayer] Received data From "
-    //     << ap.addr << ":" << ap.port << "-->" << std::endl
+    //     << ap.getStr() << "-->" << std::endl
     //     << Debug::str2hex(rd.buff) << std::endl;
     // Debug::logD(this, "[PhysicalLayer] RX " + Debug::str2hex(rd.buff));
 

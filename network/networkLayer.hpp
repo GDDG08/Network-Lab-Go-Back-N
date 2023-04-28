@@ -1,11 +1,11 @@
 /*
  * @Project      :
- * @FilePath     : \Code\network\networkLayer.hpp
+ * @FilePath     : \Codee:\@Document\课程活动\2022-2023-2\计算机网络\实验\Network Programming Projects\Project1\Code\network\networkLayer.hpp
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2023-04-22 12:33:33
  * @LastEditors  : GDDG08
- * @LastEditTime : 2023-04-26 17:15:05
+ * @LastEditTime : 2023-04-28 16:37:27
  */
 
 #ifndef NETWORKLAYER_HPP
@@ -20,7 +20,6 @@
 #include "..\toolkit\config.hpp"
 #include "Packet.hpp"
 #include "DataStruct.hpp"
-
 
 class DataLinkLayer;
 class RecvData;
@@ -46,7 +45,7 @@ class NetworkLayer {
     std::thread packetHandler;
 
     std::map<unsigned long long, FileInfo> filesMap;
-    const static int FILE_FRAME_SIZE = 512;
+    const static int FILE_FRAME_SIZE = 4096;
     unsigned long long FileID = 0;
     void handlePackets();
 
