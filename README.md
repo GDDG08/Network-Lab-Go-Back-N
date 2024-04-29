@@ -3,7 +3,6 @@
 @GDDG08
 
 
-
 ## Environment
 
 - cmake (version 3.24.1)
@@ -11,7 +10,7 @@
 
 ## System Deployment, Startup, and Use
 
-Detail in [report#Deployment](./report.md#系统部署与使用)
+Detail in [report#Deployment](./report.md#系统部署与使用-system-deployment-startup-and-use)
 
 
 **NOTICE:**
@@ -24,7 +23,9 @@ Detail in [report#Deployment](./report.md#系统部署与使用)
 - To build manually, use Ctrl+Shift+B to run `makeRun` task
 
 ## System Design
-Detail in [report#Design](./report.md#设计Design)
 
+Detail in [report#Design](./report.md#设计-design)
+
+Detail in [report#Development and Implementation](./report.md#开发与实现-development-and-implementation)
 
 
