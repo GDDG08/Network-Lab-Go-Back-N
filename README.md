@@ -18,7 +18,7 @@ Detail in [report#Deployment](./report.md#系统部署与使用-system-deploymen
 - Use **Debug Launch**, not file debug
   - Run `Debug Both GBN_Networks` to build two terminal and run
 
-    <img src="assets/a1a39fbeec80c8c6dc483427e275bbd.png" alt="a1a39fbeec80c8c6dc483427e275bbd" style="zoom:33%;" />
+    <img src=".assets/a1a39fbeec80c8c6dc483427e275bbd.png" alt="a1a39fbeec80c8c6dc483427e275bbd" style="zoom:33%;" />
 
 - To build manually, use Ctrl+Shift+B to run `makeRun` task
 
